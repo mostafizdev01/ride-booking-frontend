@@ -2,7 +2,7 @@
 const Fail = () => {
     return (
         <div>
-            
+            Fail
         </div>
     );
 };
