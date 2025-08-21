@@ -15,6 +15,7 @@ import { withAuth } from "@/utils/withAuth";
 import { adminSidebarItems } from "./adminSidebarItems";
 import { riderSidebarItems } from "./riderSidebarItems";
 import DashboardLayout from "@/components/layout/DeshboardLayout";
+import { driverSidebarItems } from "./driverSidebarItems";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,14 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/rider/me" /> },
       ...generateRoutes(riderSidebarItems),
+    ],
+  },
+  {
+    Component: withAuth(DashboardLayout, role.DRIVER as TRole),
+    path: "/driver",
+    children: [
+      { index: true, element: <Navigate to="/driver" /> },
+      ...generateRoutes(driverSidebarItems),
     ],
   },
   {
