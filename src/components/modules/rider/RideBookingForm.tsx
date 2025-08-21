@@ -296,7 +296,7 @@ export default function RideBookingForm() {
           )}
 
           {/* Submit */}
-          <Button type="submit" className="w-full" size="lg" disabled={!fareEstimate}>
+          <Button type="submit" className="w-full" size="lg"  disabled={!fareEstimate || !form.getValues("rideType")}>
             Book Ride
           </Button>
         </form>

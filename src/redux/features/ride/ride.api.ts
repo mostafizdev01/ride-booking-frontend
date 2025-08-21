@@ -18,10 +18,19 @@ export const rideApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["RIDE"],
         }),
+        nearbyRides: builder.mutation({
+            query: (data) => ({
+                url: `/ride/nearby`,
+                method: "POST",
+                data,
+            }),
+            invalidatesTags: ["RIDE"],
+        }),
     })
 });
 
 export const {
     useRequestRideMutation,
-    useUpdateRideStatusMutation
+    useUpdateRideStatusMutation,
+    useNearbyRidesMutation
 } = rideApi;
