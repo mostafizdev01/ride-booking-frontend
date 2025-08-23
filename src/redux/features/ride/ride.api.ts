@@ -41,6 +41,27 @@ export const rideApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getRideHistory: builder.query({
+            query: () => ({
+                url: `/ride/me/history`,
+                method: "GET",
+            }),
+        }),
+        cancelRide: builder.mutation<any, string>({
+            query: (rideId) => ({
+                url: `/ride/${rideId}/cancel`,
+                method: "PATCH",
+            }),
+            invalidatesTags: ["RIDE"],
+        }),
+        rateRide: builder.mutation<any, { rideId: string; score: number; feedback: string }>({
+            query: ({ rideId, score, feedback }) => ({
+                url: `/ride/${rideId}/rate`,
+                method: "PATCH",
+                data: { score, feedback },
+            }),
+            invalidatesTags: ["RIDE"],
+        }),
     })
 });
 
@@ -49,5 +70,8 @@ export const {
     useUpdateRideStatusMutation,
     useNearbyRidesMutation,
     useAcceptRideMutation,
-    useGetActiveRideQuery
+    useGetActiveRideQuery,
+    useGetRideHistoryQuery,
+    useCancelRideMutation,
+    useRateRideMutation
 } = rideApi;

@@ -35,7 +35,20 @@ export interface Ride {
     pickedUpAt: string,
     completedAt: string,
     canceledAt: string,
-  }
+  },
+  driver: {
+    _id: string,
+    name: string,
+    email: string,
+    phone: string,
+    vehicleDetails: {
+      make: string,
+      model: string,
+      color: string,
+      licensePlate: string,
+    },
+    rating: number,
+  },
 }
 
 
