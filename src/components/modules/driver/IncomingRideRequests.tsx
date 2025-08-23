@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
-
 import { useState, useEffect } from "react"
 import { MapPin, Navigation, DollarSign, Clock, Check, X } from "lucide-react"
 
@@ -8,11 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
-import { useNearbyRidesMutation } from "@/redux/features/ride/ride.api"
+import { useAcceptRideMutation, useNearbyRidesMutation } from "@/redux/features/ride/ride.api"
 import { Ride } from "@/types/ride.type"
 
 const IncomingRideRequests = () => {
   const [nearbyRides] = useNearbyRidesMutation()
+  const [acceptRide] = useAcceptRideMutation()
 
   const [incomingRequests, setIncomingRequests] = useState<Ride[]>([])
   const [processingRequest, setProcessingRequest] = useState<string | null>(null)
@@ -34,7 +32,7 @@ const IncomingRideRequests = () => {
         }
       }
       fetchNearby()
-      interval = setInterval(fetchNearby, 5000) // refresh every 5s
+      interval = setInterval(fetchNearby, 5000)
     }
     return () => interval && clearInterval(interval)
   }, [currentCoords, nearbyRides])
@@ -42,15 +40,16 @@ const IncomingRideRequests = () => {
   const handleAcceptRide = async (ride: Ride) => {
     setProcessingRequest(ride._id)
     try {
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       const acceptedRide = {
         ...ride,
         status: "accepted" as const,
-        driverId: "current-driver-id",
-        updatedAt: new Date().toISOString(),
+        timestamps: {
+          acceptedAt: new Date().toISOString(),
+        }
       }
+
+      await acceptRide({ id: ride._id, data: acceptedRide }).unwrap();
 
       toast.success("Ride accepted! Heading to pickup location.")
     } catch (error) {
@@ -71,16 +70,11 @@ const IncomingRideRequests = () => {
     }
   }
 
-  const calculateDistance = (pickup: { lat: number; lng: number }) => {
-    // Mock distance calculation
-    return (Math.random() * 5 + 0.5).toFixed(1)
-  }
 
   const calculateETA = (distance: number) => {
-    return Math.ceil(distance * 2) // Rough estimate: 2 minutes per mile
+    return Math.ceil(distance * 2)
   }
 
-  // Live location sharing
   const toggleLiveLocation = () => {
     if (!isSharingLocation) {
       if (navigator.geolocation) {
@@ -89,7 +83,7 @@ const IncomingRideRequests = () => {
             const coords = { lat: position.coords.latitude, lng: position.coords.longitude }
             setCurrentCoords(coords)
           },
-          (error) => toast.error("Unable to get location"),
+          () => toast.error("Unable to get location"),
           { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
         )
         setWatchId(id)

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/redux/baseApi";
 
 export const rideApi = baseApi.injectEndpoints({
@@ -18,6 +19,14 @@ export const rideApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["RIDE"],
         }),
+        acceptRide: builder.mutation({
+            query: ({ id, status }) => ({
+                url: `/ride/${id}/accept`,
+                method: "PATCH",
+                status,
+            }),
+            invalidatesTags: ["RIDE"],
+        }),
         nearbyRides: builder.mutation({
             query: (data) => ({
                 url: `/ride/nearby`,
@@ -26,11 +35,19 @@ export const rideApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["RIDE"],
         }),
+        getActiveRide: builder.query<any, void>({
+            query: () => ({
+                url: `/ride/driver/active-ride`,
+                method: "GET",
+            }),
+        }),
     })
 });
 
 export const {
     useRequestRideMutation,
     useUpdateRideStatusMutation,
-    useNearbyRidesMutation
+    useNearbyRidesMutation,
+    useAcceptRideMutation,
+    useGetActiveRideQuery
 } = rideApi;

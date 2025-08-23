@@ -11,8 +11,13 @@ export interface Rider {
   phone: string
 }
 
-export interface RideTimestamps {
-  requestedAt: string
+export enum RideStatus {
+  REQUESTED = "requested",
+  ACCEPTED = "accepted",
+  PICKED_UP = "picked_up",
+  IN_TRANSIT = "in_transit",
+  COMPLETED = "completed",
+  CANCELED = "canceled",
 }
 
 export interface Ride {
@@ -22,8 +27,16 @@ export interface Ride {
   fare: number
   paymentMethod: "cash" | "card"
   rider: Rider
-  status: "requested" | "accepted" | "completed" | "cancelled"
+  status: RideStatus
   createdAt: string
-  updatedAt: string
-  timestamps: RideTimestamps
+  timestamps: {
+    requestedAt: string,
+    acceptedAt: string,
+    pickedUpAt: string,
+    completedAt: string,
+    canceledAt: string,
+  }
 }
+
+
+
