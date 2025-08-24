@@ -8,9 +8,9 @@ import { store } from './redux/middlewares/store.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}>
+    {/* <Provider store={store}> */}
       <RouterProvider router={router}>
       </RouterProvider>
-    </Provider>
+    {/* </Provider> */}
   </StrictMode>,
 )
