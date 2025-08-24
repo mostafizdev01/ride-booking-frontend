@@ -1,240 +1,287 @@
-"use client"
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
-import type React from "react"
-
-import { useState } from "react"
-import { User, Car, Lock, Save } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
-import { useUpdateUserMutation } from "@/redux/features/auth/auth.api"
+import { useUpdateUserMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { toast } from "sonner";
+import Loading from "@/components/layout/Loading";
+import { Ride } from "@/types/ride.type";
 
 const DriverProfile = () => {
-const [updateUser] = useUpdateUserMutation()
+  const { data, isLoading, refetch } = useUserInfoQuery(undefined);
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
 
+  const user = data?.data;
+  const [open, setOpen] = useState(false);
 
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    picture: "",
+    vehicleModel: "",
+    vehiclePlate: "",
+    vehicleColor: "",
+  });
 
-  const [profileData, setProfileData] = useState({
-    name: user?.name || "",
-    phone: user?.phone || "",
-    email: user?.email || "",
-    vehicleMake: "Toyota",
-    vehicleModel: "Camry",
-    vehicleYear: "2020",
-    licensePlate: "ABC123",
-    licenseNumber: "DL123456789",
-  })
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        phone: user.phone || "",
+        address: user.address || "",
+        picture: user.picture || "",
+        vehicleModel: user.vehicleInfo?.model || "",
+        vehiclePlate: user.vehicleInfo?.plateNumber || "",
+        vehicleColor: user.vehicleInfo?.color || "",
+      });
+    }
+  }, [user]);
 
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  })
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
 
-  const [isUpdating, setIsUpdating] = useState(false)
-
-  const handleProfileUpdate = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsUpdating(true)
-
+  const handleUpdate = async () => {
     try {
-      await updateProfile({
-        id: user?.id,
-        name: profileData.name,
-        phone: profileData.phone,
-      }).unwrap()
-
-      toast.success("Profile Updated")
-    } catch (error) {
-      toast.error("Update Failed")
-    } finally {
-      setIsUpdating(false)
+      await updateUser({
+        id: user._id,
+        data: {
+          name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          picture: formData.picture,
+          vehicleInfo: {
+            model: formData.vehicleModel,
+            plateNumber: formData.vehiclePlate,
+            color: formData.vehicleColor,
+          },
+        },
+      }).unwrap();
+      setOpen(false);
+      toast.success("Profile updated successfully!");
+      refetch();
+    } catch (err) {
+      toast.error("Update failed");
     }
-  }
+  };
 
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault()
+  if (isLoading) return <Loading />;
 
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error("Password Mismatch")
-      return
-    }
-
-    if (passwordData.newPassword.length < 6) {
-      toast.error("Password Too Short")
-      return
-    }
-
-    try {
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      })
-
-      toast.success("Password Changed")
-    } catch (error) {
-      toast.error("Password Change Failed")
-    }
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center h-screen text-xl font-semibold text-red-500">
+        User data not found.
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Personal Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Personal Information
-          </CardTitle>
-          <CardDescription>Update your personal details</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleProfileUpdate} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  value={profileData.name}
-                  onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                  required
-                />
+    <div className="flex flex-col justify-center items-center p-8 min-h-screen gap-6">
+      <Card className="w-full max-w-4xl shadow-lg rounded-2xl">
+        {/* --- Header Section --- */}
+        <CardHeader className="flex flex-col md:flex-row items-center justify-between p-6">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <Avatar className="w-24 h-24 border-2">
+              <AvatarImage src={user.picture} alt={user.name} />
+              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div className="text-center md:text-left">
+              <CardTitle className="text-3xl font-bold">{user.name}</CardTitle>
+              <CardDescription className="text-lg mt-1">{user.email}</CardDescription>
+              <div className="mt-2 flex items-center justify-center md:justify-start gap-2 flex-wrap">
+                <Badge variant="secondary">{user.role}</Badge>
+                <Badge variant={user.isActive ? "default" : "destructive"}>
+                  {user.isActive ? "Active" : "Inactive"}
+                </Badge>
+                {user.isApproved && <Badge variant="default">Approved</Badge>}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={profileData.phone}
-                  onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" value={profileData.email} disabled className="bg-muted" />
-              <p className="text-xs text-muted-foreground">Email cannot be changed</p>
-            </div>
-            <Button type="submit" disabled={isUpdating} className="w-full md:w-auto">
-              <Save className="h-4 w-4 mr-2" />
-              {isUpdating ? "Updating..." : "Update Profile"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Vehicle Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Car className="h-5 w-5" />
-            Vehicle Information
-          </CardTitle>
-          <CardDescription>Manage your vehicle details</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="vehicleMake">Vehicle Make</Label>
-              <Input
-                id="vehicleMake"
-                value={profileData.vehicleMake}
-                onChange={(e) => setProfileData({ ...profileData, vehicleMake: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="vehicleModel">Vehicle Model</Label>
-              <Input
-                id="vehicleModel"
-                value={profileData.vehicleModel}
-                onChange={(e) => setProfileData({ ...profileData, vehicleModel: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="vehicleYear">Year</Label>
-              <Input
-                id="vehicleYear"
-                value={profileData.vehicleYear}
-                onChange={(e) => setProfileData({ ...profileData, vehicleYear: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="licensePlate">License Plate</Label>
-              <Input
-                id="licensePlate"
-                value={profileData.licensePlate}
-                onChange={(e) => setProfileData({ ...profileData, licensePlate: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="licenseNumber">Driver License Number</Label>
-              <Input
-                id="licenseNumber"
-                value={profileData.licenseNumber}
-                onChange={(e) => setProfileData({ ...profileData, licenseNumber: e.target.value })}
-              />
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Change Password */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lock className="h-5 w-5" />
-            Change Password
-          </CardTitle>
-          <CardDescription>Update your account password</CardDescription>
+          {/* Update Dialog */}
+          <div className="mt-4 md:mt-0">
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button>Update Profile</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Update Profile</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your profile here. Click save when done.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">Name</Label>
+                    <Input id="name" value={formData.name} onChange={handleInputChange} className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="phone" className="text-right">Phone</Label>
+                    <Input id="phone" value={formData.phone} onChange={handleInputChange} className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="address" className="text-right">Address</Label>
+                    <Input id="address" value={formData.address} onChange={handleInputChange} className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="picture" className="text-right">Profile Picture URL</Label>
+                    <Input id="picture" value={formData.picture} onChange={handleInputChange} className="col-span-3" />
+                  </div>
+
+                  {user.role === "DRIVER" && (
+                    <>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="vehicleModel" className="text-right">Vehicle Model</Label>
+                        <Input id="vehicleModel" value={formData.vehicleModel} onChange={handleInputChange} className="col-span-3" />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="vehiclePlate" className="text-right">Plate Number</Label>
+                        <Input id="vehiclePlate" value={formData.vehiclePlate} onChange={handleInputChange} className="col-span-3" />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="vehicleColor" className="text-right">Color</Label>
+                        <Input id="vehicleColor" value={formData.vehicleColor} onChange={handleInputChange} className="col-span-3" />
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                  <Button onClick={handleUpdate} disabled={isUpdating}>
+                    {isUpdating ? "Saving..." : "Save changes"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handlePasswordChange} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
-              <Input
-                id="currentPassword"
-                type="password"
-                value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                required
-              />
+
+        <div className="border-t"></div>
+
+        {/* --- Info Section --- */}
+        <CardContent className="p-6 flex flex-col gap-6">
+          {/* Basic Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label className="text-sm font-medium mb-1">Phone</Label>
+              <p className="text-lg">{user.phone || "Not provided"}</p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                required
-              />
+            {user.role === "DRIVER" && (
+              <>
+                <div>
+                  <Label className="text-sm font-medium mb-1">Total Earnings</Label>
+                  <p className="text-lg">{user.totalEarnings ? `$${user.totalEarnings}` : "N/A"}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium mb-1">Average Rating</Label>
+                  <p className="text-lg">
+                    {user.averageRating ? `${user.averageRating} ⭐ (${user.totalRatings} reviews)` : "Not rated yet"}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Vehicle Info */}
+          {user.role === "DRIVER" && user.vehicleInfo && (
+            <div className="mt-4">
+              <h2 className="text-xl font-semibold mb-4">🚘 Vehicle Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <Label className="text-sm font-medium mb-1">Model</Label>
+                  <p className="text-lg">{user.vehicleInfo.model}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium mb-1">Plate Number</Label>
+                  <p className="text-lg">{user.vehicleInfo.plateNumber}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium mb-1">Color</Label>
+                  <p className="text-lg">{user.vehicleInfo.color}</p>
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                required
-              />
+          )}
+
+          {/* Ride History */}
+          {user.role === "DRIVER" && user.rides && user.rides.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold mb-4">🛣 Ride History</h2>
+              <div className="flex flex-col gap-4">
+                {user.rides
+                  .slice() 
+                  .sort(
+                    (a: Ride, b: Ride) =>
+                      new Date(b.timestamps.completedAt).getTime() -
+                      new Date(a.timestamps.completedAt).getTime()
+                  )
+
+                  .map((ride: Ride) => (
+                    <Card key={ride._id} className="shadow-sm">
+                      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="text-sm font-medium mb-1">Pickup</Label>
+                          <p className="text-sm">{ride.pickupLocation.address}</p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium mb-1">Destination</Label>
+                          <p className="text-sm">{ride.destinationLocation.address}</p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium mb-1">Fare</Label>
+                          <p className="text-sm">${ride.fare}</p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium mb-1">Payment</Label>
+                          <p className="text-sm">{ride.paymentMethod}</p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium mb-1">Status</Label>
+                          <p className="text-sm">{ride.status}</p>
+                        </div>
+                        {ride.rating && (
+                          <div>
+                            <Label className="text-sm font-medium mb-1">Rating</Label>
+                            <p className="text-sm">{ride.rating.score} ⭐ ({ride.rating.feedback})</p>
+                          </div>
+                        )}
+                        <div>
+                          <Label className="text-sm font-medium mb-1">Completed At</Label>
+                          <p className="text-sm">{new Date(ride.timestamps.completedAt).toLocaleString()}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+              </div>
             </div>
-            <Button type="submit" className="w-full md:w-auto">
-              <Lock className="h-4 w-4 mr-2" />
-              Change Password
-            </Button>
-          </form>
+          )}
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default DriverProfile
+export default DriverProfile;

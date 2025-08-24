@@ -47,7 +47,10 @@ export interface Ride {
       color: string,
       licensePlate: string,
     },
-    rating: number,
+  },
+  rating: {
+    score: number,
+    feedback: string,
   },
 }
 

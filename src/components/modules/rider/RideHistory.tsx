@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
-import { Search, MapPin, Navigation, DollarSign, Star, ChevronRight } from "lucide-react"
+import { Search, MapPin, Navigation, DollarSign, Star, Filter } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,15 +9,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
-import { Ride, RideStatus } from "@/types/ride.type"
+import { type Ride, RideStatus } from "@/types/ride.type"
 import { useCancelRideMutation, useRateRideMutation, useGetRideHistoryQuery } from "@/redux/features/ride/ride.api"
 import { toast } from "sonner"
 
@@ -54,7 +49,7 @@ const RideHistory = () => {
   const { data, isLoading, isError } = useGetRideHistoryQuery([])
   const [cancelRide, { isLoading: isCancelling }] = useCancelRideMutation()
   const [rateRide, { isLoading: isRating }] = useRateRideMutation()
-
+  console.log(data)
   // Cancel Modal States
   const [cancelOpen, setCancelOpen] = useState(false)
   const [selectedRideId, setSelectedRideId] = useState<string | null>(null)
@@ -88,16 +83,15 @@ const RideHistory = () => {
     }
 
     try {
-      await cancelRide(selectedRideId).unwrap()
+      await cancelRide({ rideId: selectedRideId, reason: cancelReason }).unwrap()
       toast.success("Ride cancelled successfully ✅")
       setCancelOpen(false)
       setSelectedRideId(null)
       setCancelReason("")
-      // Update local ride list
       setRides((prev) =>
-        prev.map((r) =>
-          r._id === selectedRideId ? { ...r, status: RideStatus.CANCELED } : r
-        )
+        prev.map((r) => {
+          return r._id === selectedRideId ? { ...r, status: RideStatus.CANCELED } : r
+        }),
       )
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to cancel ride ❌")
@@ -164,10 +158,7 @@ const RideHistory = () => {
     return matchesSearch && matchesStatus && matchesDate
   })
 
-  const paginatedRides = filteredRides.slice(
-    (currentPage - 1) * ridesPerPage,
-    currentPage * ridesPerPage
-  )
+  const paginatedRides = filteredRides.slice((currentPage - 1) * ridesPerPage, currentPage * ridesPerPage)
   const totalPages = Math.ceil(filteredRides.length / ridesPerPage)
 
   const getStatusBadge = (status: Ride["status"]) => {
@@ -189,169 +180,303 @@ const RideHistory = () => {
   if (isError) return <p className="text-center py-8 text-red-500">Failed to load ride history.</p>
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">Your Ride History</h1>
-        <p className="text-muted-foreground">Track, manage, cancel, or rate your rides</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 p-4 sm:p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header - Improved responsive design */}
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+            Your Ride History
+          </h1>
+          <p className="text-slate-600 text-sm sm:text-base">Track, manage, cancel, or rate your rides</p>
+        </div>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-6 flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by location or ride ID..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full md:w-40">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value={RideStatus.REQUESTED}>Requested</SelectItem>
-              <SelectItem value={RideStatus.IN_TRANSIT}>In Transit</SelectItem>
-              <SelectItem value={RideStatus.COMPLETED}>Completed</SelectItem>
-              <SelectItem value={RideStatus.CANCELED}>Cancelled</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={dateFilter} onValueChange={setDateFilter}>
-            <SelectTrigger className="w-full md:w-40">
-              <SelectValue placeholder="Date" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Time</SelectItem>
-              <SelectItem value="today">Today</SelectItem>
-              <SelectItem value="week">This Week</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
-
-      {/* Ride List */}
-      <div className="grid gap-4">
-        {paginatedRides.length === 0 ? (
-          <div className="text-center py-16">
-            <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No rides found matching your filters</p>
-          </div>
-        ) : (
-          paginatedRides.map((ride) => (
-            <Card key={ride._id} className="hover:shadow-lg transition cursor-pointer border-l-4 border-l-primary">
-              <CardContent className="p-5 flex justify-between items-center">
-                <div className="space-y-2 flex-1">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      {format(new Date(ride.createdAt), "MMM dd, yyyy h:mm a")}
-                    </span>
-                    {getStatusBadge(ride.status)}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-green-500" />
-                      <span className="truncate">{ride.pickupLocation.address}</span>
+        {/* Filters - Mobile-first responsive design */}
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <CardContent className="p-4 sm:p-6">
+            {/* Mobile Filter Toggle */}
+            <div className="block sm:hidden mb-4">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="w-full bg-transparent">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filters & Search
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-[400px]">
+                  <SheetHeader>
+                    <SheetTitle>Filter Rides</SheetTitle>
+                    <SheetDescription>Search and filter your ride history</SheetDescription>
+                  </SheetHeader>
+                  <div className="space-y-4 mt-6">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        placeholder="Search by location or ride ID..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                      />
                     </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Navigation className="h-4 w-4 text-red-500" />
-                      <span className="truncate">{ride.destinationLocation.address}</span>
-                    </div>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value={RideStatus.REQUESTED}>Requested</SelectItem>
+                        <SelectItem value={RideStatus.IN_TRANSIT}>In Transit</SelectItem>
+                        <SelectItem value={RideStatus.COMPLETED}>Completed</SelectItem>
+                        <SelectItem value={RideStatus.CANCELED}>Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={dateFilter} onValueChange={setDateFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Date" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Time</SelectItem>
+                        <SelectItem value="today">Today</SelectItem>
+                        <SelectItem value="week">This Week</SelectItem>
+                        <SelectItem value="month">This Month</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="flex gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <DollarSign className="h-3 w-3" />${ride.fare.toFixed(2)}
-                    </span>
-                    <span className="capitalize">{ride.paymentMethod}</span>
-                  </div>
-                </div>
+                </SheetContent>
+              </Sheet>
+            </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-2">
-                  {ride.status === RideStatus.REQUESTED && (
-                    <Button variant="destructive" size="sm" onClick={() => openCancelModal(ride._id)}>
-                      Cancel
-                    </Button>
-                  )}
-                  {ride.status === RideStatus.COMPLETED && (
-                    <Button variant="secondary" size="sm" onClick={() => openRateModal(ride._id)}>
-                      Rate Ride
-                    </Button>
-                  )}
-                </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground ml-2" />
+            {/* Desktop Filters */}
+            <div className="hidden sm:flex flex-col lg:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  placeholder="Search by location or ride ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 border-slate-200 focus:border-amber-500 focus:ring-amber-500"
+                />
+              </div>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full lg:w-40 border-slate-200">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value={RideStatus.REQUESTED}>Requested</SelectItem>
+                  <SelectItem value={RideStatus.IN_TRANSIT}>In Transit</SelectItem>
+                  <SelectItem value={RideStatus.COMPLETED}>Completed</SelectItem>
+                  <SelectItem value={RideStatus.CANCELED}>Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={dateFilter} onValueChange={setDateFilter}>
+                <SelectTrigger className="w-full lg:w-40 border-slate-200">
+                  <SelectValue placeholder="Date" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Time</SelectItem>
+                  <SelectItem value="today">Today</SelectItem>
+                  <SelectItem value="week">This Week</SelectItem>
+                  <SelectItem value="month">This Month</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Ride List - Improved mobile layout */}
+        <div className="space-y-4">
+          {paginatedRides.length === 0 ? (
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardContent className="text-center py-16">
+                <MapPin className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-600 mb-2">No rides found</h3>
+                <p className="text-slate-500">Try adjusting your filters to see more results</p>
               </CardContent>
             </Card>
-          ))
-        )}
-      </div>
+          ) : (
+            paginatedRides.map((ride) => (
+              <Card
+                key={ride._id}
+                className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 border-l-4 border-l-amber-500"
+              >
+                <CardContent className="p-4 sm:p-6">
+                  {/* Mobile Layout */}
+                  <div className="block sm:hidden space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <span className="text-xs text-slate-500 font-medium">
+                          {format(new Date(ride.createdAt), "MMM dd, h:mm a")}
+                        </span>
+                        {getStatusBadge(ride.status)}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {ride.status === RideStatus.REQUESTED && (
+                          <Button variant="destructive" size="sm" onClick={() => openCancelModal(ride._id)}>
+                            Cancel
+                          </Button>
+                        )}
+                        {ride.status === RideStatus.COMPLETED && !ride.rating && (
+                          <Button variant="secondary" size="sm" onClick={() => openRateModal(ride._id)}>
+                            Rate
+                          </Button>
+                        )}
+                      </div>
+                    </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center mt-6">
-          <p className="text-sm text-muted-foreground">
-            Showing {(currentPage - 1) * ridesPerPage + 1} to{" "}
-            {Math.min(currentPage * ridesPerPage, filteredRides.length)} of {filteredRides.length} rides
-          </p>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-              Previous
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-              Next
-            </Button>
-          </div>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-700 leading-tight">{ride.pickupLocation.address}</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Navigation className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-700 leading-tight">{ride.destinationLocation.address}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                      <div className="flex items-center gap-4 text-sm text-slate-600">
+                        <span className="flex items-center gap-1 font-semibold">
+                          <DollarSign className="h-3 w-3" />${ride.fare.toFixed(2)}
+                        </span>
+                        <span className="capitalize text-xs bg-slate-100 px-2 py-1 rounded-full">
+                          {ride.paymentMethod}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Desktop Layout */}
+                  <div className="hidden sm:flex justify-between items-center">
+                    <div className="space-y-3 flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-500 font-medium">
+                          {format(new Date(ride.createdAt), "MMM dd, yyyy h:mm a")}
+                        </span>
+                        {getStatusBadge(ride.status)}
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-3">
+                          <MapPin className="h-4 w-4 text-green-500" />
+                          <span className="text-sm text-slate-700">{ride.pickupLocation.address}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Navigation className="h-4 w-4 text-red-500" />
+                          <span className="text-sm text-slate-700">{ride.destinationLocation.address}</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-6 text-sm text-slate-600">
+                        <span className="flex items-center gap-1 font-semibold">
+                          <DollarSign className="h-3 w-3" />${ride.fare.toFixed(2)}
+                        </span>
+                        <span className="capitalize bg-slate-100 px-3 py-1 rounded-full text-xs">
+                          {ride.paymentMethod}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {ride.status === RideStatus.REQUESTED && (
+                        <Button variant="destructive" size="sm" onClick={() => openCancelModal(ride._id)}>
+                          Cancel
+                        </Button>
+                      )}
+                      {ride.status === RideStatus.COMPLETED && !ride.rating && (
+                        <Button variant="secondary" size="sm" onClick={() => openRateModal(ride._id)}>
+                          Rate Ride
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
-      )}
 
-      {/* Cancel Ride Modal */}
-      <Dialog open={cancelOpen} onOpenChange={setCancelOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Cancel Ride</DialogTitle>
-            <DialogDescription>Please provide a reason for cancelling this ride.</DialogDescription>
-          </DialogHeader>
-          <Textarea
-            placeholder="Enter reason here..."
-            value={cancelReason}
-            onChange={(e) => setCancelReason(e.target.value)}
-            className="mb-4"
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setCancelOpen(false)}>Close</Button>
-            <Button variant="destructive" onClick={confirmCancel} disabled={isCancelling}>
-              {isCancelling ? "Cancelling..." : "Confirm Cancel"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        {/* Pagination - Improved mobile design */}
+        {totalPages > 1 && (
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p className="text-sm text-slate-600 text-center sm:text-left">
+                  Showing {(currentPage - 1) * ridesPerPage + 1} to{" "}
+                  {Math.min(currentPage * ridesPerPage, filteredRides.length)} of {filteredRides.length} rides
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="border-slate-200"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="border-slate-200"
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Rate Ride Modal */}
-      <Dialog open={rateOpen} onOpenChange={setRateOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Rate Ride</DialogTitle>
-            <DialogDescription>Please provide a rating for your ride.</DialogDescription>
-          </DialogHeader>
-          <StarRating rating={ratingValue} setRating={setRatingValue} />
-          <Textarea
-            placeholder="Write feedback here..."
-            value={ratingFeedback}
-            onChange={(e) => setRatingFeedback(e.target.value)}
-            className="mt-4 mb-4"
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setRateOpen(false)}>Close</Button>
-            <Button variant="secondary" onClick={confirmRate} disabled={isRating}>
-              {isRating ? "Submitting..." : "Submit Rating"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        {/* Cancel Ride Modal */}
+        <Dialog open={cancelOpen} onOpenChange={setCancelOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Cancel Ride</DialogTitle>
+              <DialogDescription>Please provide a reason for cancelling this ride.</DialogDescription>
+            </DialogHeader>
+            <Textarea
+              placeholder="Enter reason here..."
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              className="mb-4"
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setCancelOpen(false)}>
+                Close
+              </Button>
+              <Button variant="destructive" onClick={confirmCancel} disabled={isCancelling}>
+                {isCancelling ? "Cancelling..." : "Confirm Cancel"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Rate Ride Modal */}
+        <Dialog open={rateOpen} onOpenChange={setRateOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Rate Ride</DialogTitle>
+              <DialogDescription>Please provide a rating for your ride.</DialogDescription>
+            </DialogHeader>
+            <StarRating rating={ratingValue} setRating={setRatingValue} />
+            <Textarea
+              placeholder="Write feedback here..."
+              value={ratingFeedback}
+              onChange={(e) => setRatingFeedback(e.target.value)}
+              className="mt-4 mb-4"
+            />
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setRateOpen(false)}>
+                Close
+              </Button>
+              <Button variant="secondary" onClick={confirmRate} disabled={isRating}>
+                {isRating ? "Submitting..." : "Submit Rating"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   )
 }

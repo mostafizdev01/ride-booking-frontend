@@ -19,6 +19,7 @@ import HomePage from "@/pages/public/HomePage";
 import FeaturesPage from "@/pages/public/FeaturesPage";
 import ContactPage from "@/pages/public/ContactPage";
 import FAQPage from "@/pages/public/FAQPage";
+import AccountStatusPage from "@/pages/status/AccountStatusPage";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
       {
         Component: FAQPage,
         path: "faq",
+      },
+      {
+        Component: AccountStatusPage,
+        path: "account-status",
       }
     ],
   },
@@ -67,7 +72,7 @@ export const router = createBrowserRouter([
     Component: withAuth(DashboardLayout, role.DRIVER as TRole),
     path: "/driver",
     children: [
-      { index: true, element: <Navigate to="/driver" /> },
+      { index: true, element: <Navigate to="/driver/driver-dashboard" /> },
       ...generateRoutes(driverSidebarItems),
     ],
   },

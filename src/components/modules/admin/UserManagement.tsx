@@ -1,4 +1,4 @@
-"use client"
+
 
 import { useState, useEffect } from "react"
 import { Search, MoreHorizontal, Shield, ShieldOff, Eye, Mail } from "lucide-react"

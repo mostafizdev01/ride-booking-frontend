@@ -3,6 +3,7 @@ import Earnings from "@/pages/Driver/EarningsDashboard";
 import Dashboard from "@/pages/Driver/Dashboard";
 import ActiveRideManager from "@/components/modules/driver/ActiveRideManager";
 import IncomingRide from "@/pages/Driver/IncomingRide";
+import DriverProfile from "@/components/modules/driver/DriverProfile";
 
 export const driverSidebarItems: ISidebarItem[] = [
   {
@@ -12,6 +13,11 @@ export const driverSidebarItems: ISidebarItem[] = [
         title: "Dashboard",
         url: "/driver/driver-dashboard",
         component: Dashboard,
+      },
+      {
+        title: "My Profile",
+        url: "/driver/my-profile",
+        component: DriverProfile,
       },
       {
         title: "Earnings",

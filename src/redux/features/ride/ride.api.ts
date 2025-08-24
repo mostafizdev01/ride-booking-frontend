@@ -47,10 +47,11 @@ export const rideApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
-        cancelRide: builder.mutation<any, string>({
-            query: (rideId) => ({
+        cancelRide: builder.mutation<any, { rideId: string; reason: string }>({
+            query: ({ rideId, reason }) => ({
                 url: `/ride/${rideId}/cancel`,
                 method: "PATCH",
+                data: { reason },
             }),
             invalidatesTags: ["RIDE"],
         }),
