@@ -26,7 +26,9 @@ import React from "react";
 const navigationLinks = [
   { href: "/", label: "Home", role: "PUBLIC" },
   { href: "/about", label: "About", role: "PUBLIC" },
-  { href: "/tours", label: "Tours", role: "PUBLIC" },
+  { href: "/contact", label: "Contact", role: "PUBLIC" },
+  { href: "/faq", label: "FAQ", role: "PUBLIC" },
+  { href: "/features", label: "Features", role: "PUBLIC" },
   { href: "/admin", label: "Dashboard", role: role.SUPER_ADMIN },
   { href: "/admin", label: "Dashboard", role: role.ADMIN },
   { href: "/rider", label: "Dashboard", role: role.RIDER },

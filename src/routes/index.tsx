@@ -1,5 +1,4 @@
 import App from "@/App";
-import About from "@/pages/About";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Verify from "@/pages/Verify";
@@ -8,7 +7,6 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { TRole } from "@/types";
 import Fail from "@/pages/Payment/Fail";
 import Success from "@/pages/Payment/Success";
-import Homepage from "@/pages/Homepage";
 import { role } from "@/constants/role";
 import Unauthorized from "@/pages/Unauthorized";
 import { withAuth } from "@/utils/withAuth";
@@ -16,6 +14,11 @@ import { adminSidebarItems } from "./adminSidebarItems";
 import { riderSidebarItems } from "./riderSidebarItems";
 import DashboardLayout from "@/components/layout/DeshboardLayout";
 import { driverSidebarItems } from "./driverSidebarItems";
+import AboutPage from "@/pages/public/AboutPage";
+import HomePage from "@/pages/public/HomePage";
+import FeaturesPage from "@/pages/public/FeaturesPage";
+import ContactPage from "@/pages/public/ContactPage";
+import FAQPage from "@/pages/public/FAQPage";
 
 export const router = createBrowserRouter([
   {
@@ -23,13 +26,25 @@ export const router = createBrowserRouter([
     path: "/",
     children: [
       {
-        Component: Homepage,
+        Component: HomePage,
         index: true,
       },
       {
-        Component: About,
+        Component: AboutPage,
         path: "about",
       },
+      {
+        Component: FeaturesPage,
+        path: "features",
+      },
+      {
+        Component: ContactPage,
+        path: "contact",
+      },
+      {
+        Component: FAQPage,
+        path: "faq",
+      }
     ],
   },
   {
