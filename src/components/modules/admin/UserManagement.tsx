@@ -1,6 +1,6 @@
+"use client"
 
-
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Search, MoreHorizontal, Shield, ShieldOff, Eye, Mail } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -18,133 +18,96 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
+import { useAllUsersQuery, useUpdateUserMutation } from "@/redux/features/auth/auth.api"
+import { IUser, Role } from "@/types/user.type"
 
-interface User {
+type FrontendUser = {
   id: string
   name: string
   email: string
   phone: string
-  role: "rider" | "driver"
-  status: "active" | "blocked" | "suspended"
+  role: Role
+  isBlocked: boolean
+  isActive: boolean
   joinDate: string
   totalRides: number
   rating: number
 }
 
+function normalizeUser(user: IUser): FrontendUser {
+  return {
+    id: user._id?.toString() || "",
+    name: user.name,
+    email: user.email,
+    phone: user.phone || "-",
+    role: user.role,
+    isBlocked: user.isBlocked ?? false,
+    isActive: user.isActive ?? false,
+    joinDate: user.createdAt || new Date().toISOString(),
+    totalRides: user.rides?.length || 0,
+    rating: user.averageRating || 0,
+  }
+}
+
 const UserManagement = () => {
-  const [users, setUsers] = useState<User[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [currentPage, setCurrentPage] = useState(1)
-  const usersPerPage = 10
 
-  useEffect(() => {
-    // Mock user data
-    const mockUsers: User[] = [
-      {
-        id: "user-001",
-        name: "John Smith",
-        email: "john.smith@email.com",
-        phone: "+1 (555) 123-4567",
-        role: "driver",
-        status: "active",
-        joinDate: "2024-01-15",
-        totalRides: 245,
-        rating: 4.8,
-      },
-      {
-        id: "user-002",
-        name: "Sarah Johnson",
-        email: "sarah.j@email.com",
-        phone: "+1 (555) 234-5678",
-        role: "rider",
-        status: "active",
-        joinDate: "2024-02-20",
-        totalRides: 67,
-        rating: 4.9,
-      },
-      {
-        id: "user-003",
-        name: "Mike Wilson",
-        email: "mike.wilson@email.com",
-        phone: "+1 (555) 345-6789",
-        role: "driver",
-        status: "blocked",
-        joinDate: "2023-12-10",
-        totalRides: 89,
-        rating: 3.2,
-      },
-    ]
-    setUsers(mockUsers)
-  }, [])
-
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.phone.includes(searchQuery)
-
-    const matchesRole = roleFilter === "all" || user.role === roleFilter
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter
-
-    return matchesSearch && matchesRole && matchesStatus
+  console.log(searchQuery, roleFilter, statusFilter);
+  // ---- API call with query params ----
+  const { data, isLoading } = useAllUsersQuery({
+    search: searchQuery || undefined,
+    role: roleFilter !== "all" ? roleFilter : undefined,
+    status: statusFilter !== "all" ? statusFilter : undefined,
+    page: currentPage,
+    limit: 5,
   })
 
-  const paginatedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage)
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage)
+  const [updateUser] = useUpdateUserMutation()
 
-  const handleUserAction = async (userId: string, action: "block" | "unblock" | "suspend") => {
+  const users: FrontendUser[] = data?.data?.map((u: IUser) => normalizeUser(u)) || []
+  const meta = data?.meta || { total: 0, page: 1, limit: 10 }
+  const totalPages = Math.ceil(meta.total / meta.limit)
+
+  // ---- Action handler ----
+  const handleUserAction = async (id: string, data: { isBlocked: boolean; isActive: boolean }) => {
     try {
-      // Mock API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === userId
-            ? {
-                ...user,
-                status: action === "block" ? "blocked" : action === "suspend" ? "suspended" : "active",
-              }
-            : user,
-        ),
-      )
-
-      toast.success(`User has been ${action}ed successfully.`)
-    } catch (error) {
+      console.log(data, id);
+      await updateUser({
+        id, data: {
+          isBlocked: data.isBlocked,
+          isActive: data.isActive
+        }
+      }).unwrap()
+      toast.success(`User has been ${data.isActive ? "unblocked" : "blocked"} successfully.`)
+    } catch {
       toast.error("Action Failed")
     }
   }
 
-  const getStatusBadge = (status: User["status"]) => {
-    switch (status) {
-      case "active":
-        return <Badge className="bg-green-500">Active</Badge>
-      case "blocked":
-        return <Badge variant="destructive">Blocked</Badge>
-      case "suspended":
-        return <Badge className="bg-yellow-500">Suspended</Badge>
-      default:
-        return <Badge variant="outline">{status}</Badge>
-    }
+  // ---- Badge helpers ----
+  const getStatusBadge = (user: { isBlocked: boolean; isActive: boolean }) => {
+    if (user.isBlocked) return <Badge variant="destructive">Blocked</Badge>
+    if (user.isActive) return <Badge className="bg-green-500">Active</Badge>
   }
 
-  const getRoleBadge = (role: User["role"]) => {
-    return (
-      <Badge
-        variant="outline"
-        className={role === "driver" ? "border-blue-500 text-blue-500" : "border-purple-500 text-purple-500"}
-      >
-        {role === "driver" ? "Driver" : "Rider"}
-      </Badge>
-    )
+  const getRoleBadge = (role: FrontendUser["role"]) => {
+    const roleMap: Record<string, { label: string; color: string }> = {
+      DRIVER: { label: "Driver", color: "border-blue-500 text-blue-500" },
+      RIDER: { label: "Rider", color: "border-purple-500 text-purple-500" },
+      ADMIN: { label: "Admin", color: "border-red-500 text-red-500" },
+      SUPER_ADMIN: { label: "Super Admin", color: "border-orange-500 text-orange-500" },
+    }
+    return <Badge variant="outline" className={roleMap[role].color}>{roleMap[role].label}</Badge>
   }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>User Management</CardTitle>
-        <CardDescription>Manage riders and drivers on the platform</CardDescription>
+        <CardDescription>Manage riders, drivers, and admins on the platform</CardDescription>
       </CardHeader>
       <CardContent>
         {/* Filters */}
@@ -152,31 +115,35 @@ const UserManagement = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search users by name, email, or phone..."
+              placeholder="Search users..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+              }}
               className="pl-10"
             />
           </div>
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
+          <Select value={roleFilter} onValueChange={(val) => { setRoleFilter(val); setCurrentPage(1) }}>
             <SelectTrigger className="w-full md:w-40">
               <SelectValue placeholder="Role" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="rider">Riders</SelectItem>
-              <SelectItem value="driver">Drivers</SelectItem>
+              <SelectItem value="RIDER">Riders</SelectItem>
+              <SelectItem value="DRIVER">Drivers</SelectItem>
+              <SelectItem value="ADMIN">Admins</SelectItem>
+              <SelectItem value="SUPER_ADMIN">Super Admins</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={(val) => { setStatusFilter(val); setCurrentPage(1) }}>
             <SelectTrigger className="w-full md:w-40">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="blocked">Blocked</SelectItem>
-              <SelectItem value="suspended">Suspended</SelectItem>
+              <SelectItem value="ACTIVE">Active</SelectItem>
+              <SelectItem value="BLOCKED">Blocked</SelectItem>
+              <SelectItem value="SUSPENDED">Suspended</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -196,14 +163,20 @@ const UserManagement = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedUsers.length === 0 ? (
+              {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8">
-                    No users found matching your criteria
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              ) : users.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8">
+                    No users found
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedUsers.map((user) => (
+                users.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>
                       <div>
@@ -213,7 +186,7 @@ const UserManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>{getRoleBadge(user.role)}</TableCell>
-                    <TableCell>{getStatusBadge(user.status)}</TableCell>
+                    <TableCell>{getStatusBadge({ isBlocked: user.isBlocked, isActive: user.isActive })}</TableCell>
                     <TableCell>{user.totalRides}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
@@ -242,56 +215,26 @@ const UserManagement = () => {
                                 <DialogTitle>User Details</DialogTitle>
                                 <DialogDescription>Detailed information for {user.name}</DialogDescription>
                               </DialogHeader>
-                              <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div>
-                                    <span className="text-sm font-medium">Name:</span>
-                                    <p>{user.name}</p>
-                                  </div>
-                                  <div>
-                                    <span className="text-sm font-medium">Role:</span>
-                                    <p className="capitalize">{user.role}</p>
-                                  </div>
-                                  <div>
-                                    <span className="text-sm font-medium">Email:</span>
-                                    <p>{user.email}</p>
-                                  </div>
-                                  <div>
-                                    <span className="text-sm font-medium">Phone:</span>
-                                    <p>{user.phone}</p>
-                                  </div>
-                                  <div>
-                                    <span className="text-sm font-medium">Status:</span>
-                                    <div className="mt-1">{getStatusBadge(user.status)}</div>
-                                  </div>
-                                  <div>
-                                    <span className="text-sm font-medium">Rating:</span>
-                                    <p>{user.rating.toFixed(1)}/5.0</p>
-                                  </div>
-                                </div>
-                              </div>
                             </DialogContent>
                           </Dialog>
                           <DropdownMenuItem onClick={() => window.open(`mailto:${user.email}`)}>
                             <Mail className="mr-2 h-4 w-4" />
                             Send Email
                           </DropdownMenuItem>
-                          {user.status === "active" ? (
-                            <>
-                              <DropdownMenuItem onClick={() => handleUserAction(user.id, "block")}>
-                                <ShieldOff className="mr-2 h-4 w-4" />
-                                Block User
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleUserAction(user.id, "suspend")}>
-                                <Shield className="mr-2 h-4 w-4" />
-                                Suspend User
-                              </DropdownMenuItem>
-                            </>
-                          ) : (
-                            <DropdownMenuItem onClick={() => handleUserAction(user.id, "unblock")}>
+
+                          {/* --- Action buttons --- */}
+                          {user.isBlocked ? (
+                            <DropdownMenuItem onClick={() => handleUserAction(user.id, { isBlocked: false, isActive: true })}>
                               <Shield className="mr-2 h-4 w-4" />
                               Unblock User
                             </DropdownMenuItem>
+                          ) : (
+                            <>
+                              <DropdownMenuItem onClick={() => handleUserAction(user.id, { isBlocked: true, isActive: false })}>
+                                <ShieldOff className="mr-2 h-4 w-4" />
+                                Block User
+                              </DropdownMenuItem>
+                            </>
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -307,26 +250,26 @@ const UserManagement = () => {
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-6">
             <p className="text-sm text-muted-foreground">
-              Showing {(currentPage - 1) * usersPerPage + 1} to{" "}
-              {Math.min(currentPage * usersPerPage, filteredUsers.length)} of {filteredUsers.length} users
+              Showing {(meta.page - 1) * meta.limit + 1} to{" "}
+              {Math.min(meta.page * meta.limit, meta.total)} of {meta.total} users
             </p>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(currentPage - 1)}
-                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+                disabled={meta.page === 1}
               >
                 Previous
               </Button>
               <span className="text-sm">
-                Page {currentPage} of {totalPages}
+                Page {meta.page} of {totalPages}
               </span>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+                disabled={meta.page === totalPages}
               >
                 Next
               </Button>
