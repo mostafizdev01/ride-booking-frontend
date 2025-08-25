@@ -1,4 +1,5 @@
 import Profile from "@/pages/Profile";
+import ActiveRideTrackerPage from "@/pages/Rider/ActiveRideTrackerPage";
 import RideHistoryPage from "@/pages/Rider/RideHistoryPage";
 import RiderDashboard from "@/pages/Rider/RiderDashboard";
 import RideRequest from "@/pages/Rider/RideRequest";
@@ -28,6 +29,11 @@ export const riderSidebarItems: ISidebarItem[] = [
         url: "/rider/history",
         component: RideHistoryPage,
       },
+      {
+        title: "Active Ride",
+        url: "/rider/active-ride",
+        component: ActiveRideTrackerPage,
+      }
     ],
   },
 ];

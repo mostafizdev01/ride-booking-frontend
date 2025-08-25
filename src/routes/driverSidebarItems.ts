@@ -4,6 +4,7 @@ import Dashboard from "@/pages/Driver/Dashboard";
 import ActiveRideManager from "@/components/modules/driver/ActiveRideManager";
 import IncomingRide from "@/pages/Driver/IncomingRide";
 import DriverProfile from "@/components/modules/driver/DriverProfile";
+import DriverRideHistoryPage from "@/pages/Driver/DriverRideHistoryPage";
 
 export const driverSidebarItems: ISidebarItem[] = [
   {
@@ -38,6 +39,11 @@ export const driverSidebarItems: ISidebarItem[] = [
         title: "Active Rides",
         url: "/driver/active-rides",
         component: ActiveRideManager
+      },
+      {
+        title: "Rides History",
+        url: "/driver/rides-history",
+        component: DriverRideHistoryPage
       },
       
     ],

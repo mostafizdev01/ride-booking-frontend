@@ -12,20 +12,17 @@ import { Ride, RideStatus } from "@/types/ride.type"
 import { toast } from "sonner"
 import { useGetActiveRideQuery, useUpdateRideStatusMutation } from "@/redux/features/ride/ride.api"
 
-// Leaflet/Map
 import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import L from "leaflet"
 import { useNavigate } from "react-router"
 
-// Fix default Leaflet marker
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 })
 
-// --- custom icons ---
 const pickupIcon = new L.Icon({
   iconUrl: icons1,
   iconSize: [38, 38],
@@ -52,16 +49,13 @@ const ActiveRideManager = () => {
 
   const [ride, setRide] = useState<Ride | null>(null)
 
-  // Live driver location
   const [driverLocation, setDriverLocation] = useState<[number, number] | null>(null)
   const moveTimer = useRef<NodeJS.Timeout | null>(null)
 
-  // Keep local ride in sync with query data
   useEffect(() => {
     if (data?.data) {
       const r: Ride = data.data
       setRide(r)
-      // Initialize driver location at pickup (lat, lng)
       setDriverLocation([
         r.pickupLocation.coordinates[1],
         r.pickupLocation.coordinates[0],
@@ -72,7 +66,6 @@ const ActiveRideManager = () => {
     }
   }, [data])
 
-  // Smoothly move driver towards destination while IN_TRANSIT
   useEffect(() => {
     if (!ride || !driverLocation) return
 
@@ -81,10 +74,8 @@ const ActiveRideManager = () => {
       ride.destinationLocation.coordinates[0],
     ]
 
-    // Clear any previous interval
     if (moveTimer.current) clearInterval(moveTimer.current)
 
-    // Only animate when picked up or in transit
     if (ride.status === RideStatus.PICKED_UP || ride.status === RideStatus.IN_TRANSIT) {
       moveTimer.current = setInterval(() => {
         setDriverLocation((prev) => {
@@ -92,7 +83,6 @@ const ActiveRideManager = () => {
             ride.pickupLocation.coordinates[1],
             ride.pickupLocation.coordinates[0],
           ]
-          // small step towards destination
           const step = 0.0006
           const dLat = destLat - lat
           const dLng = destLng - lng
@@ -187,10 +177,8 @@ const ActiveRideManager = () => {
     try {
       await updateStatus({ id: ride._id, data: { status: nextStatus } }).unwrap()
 
-      // Optimistic UI: update local state immediately
       setRide(prev => (prev ? { ...prev, status: nextStatus } : prev))
 
-      // Refresh server state to stay consistent
       const refreshed = await refetch()
       if (refreshed?.data?.data) setRide(refreshed.data.data)
 
@@ -209,7 +197,6 @@ const ActiveRideManager = () => {
     }
   }
 
-  // Loading/empty states
   if (isRideLoading || isRideFetching) {
     return (
       <div className="flex flex-col items-center justify-center h-96 space-y-4">
@@ -247,7 +234,6 @@ const ActiveRideManager = () => {
 
   return (
     <div className="space-y-6">
-      {/* Status Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className={`w-3 h-3 rounded-full ${statusInfo.color} animate-pulse`} />
@@ -259,7 +245,6 @@ const ActiveRideManager = () => {
         <Badge variant="outline">Ride #{ride._id?.slice(-6)}</Badge>
       </div>
 
-      {/* Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span>Trip Progress</span>
@@ -268,7 +253,6 @@ const ActiveRideManager = () => {
         <Progress value={progress} className="h-2" />
       </div>
 
-      {/* Trip Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="pb-3">
@@ -295,7 +279,6 @@ const ActiveRideManager = () => {
         </Card>
       </div>
 
-      {/* Passenger Info */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Passenger Information</CardTitle>
@@ -322,7 +305,6 @@ const ActiveRideManager = () => {
         </CardContent>
       </Card>
 
-      {/* Navigation Map */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Navigation</CardTitle>
@@ -338,16 +320,12 @@ const ActiveRideManager = () => {
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-              {/* Pickup Marker */}
               <Marker position={pickupLatLng} icon={pickupIcon as any} />
 
-              {/* Destination Marker */}
               <Marker position={destLatLng} icon={destinationIcon as any} />
 
-              {/* Driver Live Location */}
               {driverLocation && <Marker position={driverLocation} icon={pickupIcon as any} />}
 
-              {/* Polyline from pickup → driver → destination */}
               {driverLocation && (
                 <Polyline
                   positions={[pickupLatLng, driverLocation, destLatLng]}
@@ -363,7 +341,6 @@ const ActiveRideManager = () => {
         </CardContent>
       </Card>
 
-      {/* Action Button */}
       {statusInfo.action && (
         <Button
           onClick={handleUpdateStatus}

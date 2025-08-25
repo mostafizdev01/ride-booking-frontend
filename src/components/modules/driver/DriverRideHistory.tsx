@@ -1,7 +1,7 @@
+/* eslint-disable no-case-declarations */
 
 
 import { useState, useEffect } from "react"
-import { useSelector } from "react-redux"
 import { format } from "date-fns"
 import { Search, MapPin, Navigation, DollarSign, ChevronRight } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -17,9 +17,10 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Ride, RideStatus } from "@/types/ride.type"
+import { useGetDriverRidesQuery } from "@/redux/features/ride/ride.api"
+import Loading from "@/components/layout/Loading"
 
-import type { RootState } from "../../store/store"
-import type { Ride } from "../../store/slices/rideSlice"
 
 const DriverRideHistory = () => {
   const [searchQuery, setSearchQuery] = useState("")
@@ -29,56 +30,26 @@ const DriverRideHistory = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const ridesPerPage = 10
 
-  const { user } = useSelector((state: RootState) => state.auth)
+  const { data, isLoading } = useGetDriverRidesQuery([])
+
+
+
 
   useEffect(() => {
-    // Mock driver ride history data
-    const mockRides: Ride[] = [
-      {
-        id: "ride-d001",
-        riderId: "rider-001",
-        driverId: user?.id || "",
-        pickupLocation: { address: "123 Main St, San Francisco, CA", lat: 37.7749, lng: -122.4194 },
-        destination: { address: "456 Market St, San Francisco, CA", lat: 37.7849, lng: -122.4094 },
-        status: "completed",
-        fare: 18.5,
-        paymentMethod: "card",
-        createdAt: "2024-01-15T10:30:00Z",
-        updatedAt: "2024-01-15T11:00:00Z",
-      },
-      {
-        id: "ride-d002",
-        riderId: "rider-002",
-        driverId: user?.id || "",
-        pickupLocation: { address: "789 Pine St, San Francisco, CA", lat: 37.7649, lng: -122.4294 },
-        destination: { address: "321 Oak St, San Francisco, CA", lat: 37.7549, lng: -122.4394 },
-        status: "completed",
-        fare: 12.75,
-        paymentMethod: "cash",
-        createdAt: "2024-01-14T15:45:00Z",
-        updatedAt: "2024-01-14T16:15:00Z",
-      },
-      {
-        id: "ride-d003",
-        riderId: "rider-003",
-        driverId: user?.id || "",
-        pickupLocation: { address: "555 Broadway, San Francisco, CA", lat: 37.7949, lng: -122.3994 },
-        destination: { address: "777 Mission St, San Francisco, CA", lat: 37.7449, lng: -122.4494 },
-        status: "cancelled",
-        fare: 0,
-        paymentMethod: "card",
-        createdAt: "2024-01-13T09:20:00Z",
-        updatedAt: "2024-01-13T09:25:00Z",
-      },
-    ]
-    setRides(mockRides)
-  }, [user?.id])
+    if (data && data.data) setRides(data.data)
+  }, [data])
+
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   const filteredRides = rides.filter((ride) => {
+
     const matchesSearch =
       ride.pickupLocation.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ride.destination.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ride.id.toLowerCase().includes(searchQuery.toLowerCase())
+      ride.destinationLocation.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ride._id.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesStatus = statusFilter === "all" || ride.status === statusFilter
 
@@ -109,11 +80,11 @@ const DriverRideHistory = () => {
 
   const getStatusBadge = (status: Ride["status"]) => {
     switch (status) {
-      case "completed":
+      case RideStatus.COMPLETED:
         return <Badge className="bg-green-500">Completed</Badge>
-      case "cancelled":
+      case RideStatus.CANCELED:
         return <Badge variant="destructive">Cancelled</Badge>
-      case "in_transit":
+      case RideStatus.IN_TRANSIT:
         return <Badge className="bg-blue-500">In Transit</Badge>
       default:
         return <Badge variant="outline">{status}</Badge>
@@ -178,7 +149,7 @@ const DriverRideHistory = () => {
               </div>
             ) : (
               paginatedRides.map((ride) => (
-                <Dialog key={ride.id}>
+                <Dialog key={ride._id}>
                   <DialogTrigger asChild>
                     <Card className="cursor-pointer hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
@@ -197,7 +168,7 @@ const DriverRideHistory = () => {
                               </div>
                               <div className="flex items-center gap-2 text-sm">
                                 <Navigation className="h-4 w-4 text-red-500" />
-                                <span className="truncate">{ride.destination.address}</span>
+                                <span className="truncate">{ride.destinationLocation.address}</span>
                               </div>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -205,7 +176,7 @@ const DriverRideHistory = () => {
                                 <DollarSign className="h-3 w-3" />${ride.fare.toFixed(2)}
                               </span>
                               <span className="capitalize">{ride.paymentMethod}</span>
-                              <span>{calculateTripDuration(ride.createdAt, ride.updatedAt)}</span>
+                              <span>{calculateTripDuration(ride.timestamps.acceptedAt, ride.timestamps.completedAt)}</span>
                             </div>
                           </div>
                           <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -216,7 +187,7 @@ const DriverRideHistory = () => {
                   <DialogContent className="max-w-md">
                     <DialogHeader>
                       <DialogTitle>Ride Details</DialogTitle>
-                      <DialogDescription>Ride ID: {ride.id}</DialogDescription>
+                      <DialogDescription>Ride ID: {ride._id}</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
                       <div className="space-y-2">
@@ -228,7 +199,7 @@ const DriverRideHistory = () => {
                           </div>
                           <div className="flex items-center gap-2">
                             <Navigation className="h-4 w-4 text-red-500" />
-                            <span>To: {ride.destination.address}</span>
+                            <span>To: {ride.destinationLocation.address}</span>
                           </div>
                         </div>
                       </div>
@@ -247,7 +218,7 @@ const DriverRideHistory = () => {
                         </div>
                         <div>
                           <span className="text-muted-foreground">Duration:</span>
-                          <p>{calculateTripDuration(ride.createdAt, ride.updatedAt)}</p>
+                          <p>{calculateTripDuration(ride.timestamps.acceptedAt, ride.timestamps.completedAt)}</p>
                         </div>
                       </div>
                       <div className="text-sm">

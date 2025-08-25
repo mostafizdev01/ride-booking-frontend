@@ -41,9 +41,21 @@ export const rideApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getSingleRideForRider: builder.query<any, void>({
+            query: () => ({
+                url: `/ride/rider/active-ride`,
+                method: "GET",
+            }),
+        }),
         getRideHistory: builder.query({
             query: () => ({
                 url: `/ride/me/history`,
+                method: "GET",
+            }),
+        }),
+        getDriverRides: builder.query({
+            query: () => ({
+                url: `/ride/driver/history`,
                 method: "GET",
             }),
         }),
@@ -74,5 +86,7 @@ export const {
     useGetActiveRideQuery,
     useGetRideHistoryQuery,
     useCancelRideMutation,
-    useRateRideMutation
+    useRateRideMutation,
+    useGetDriverRidesQuery,
+    useGetSingleRideForRiderQuery
 } = rideApi;

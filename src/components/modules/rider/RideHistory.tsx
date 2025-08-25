@@ -49,7 +49,7 @@ const RideHistory = () => {
   const { data, isLoading, isError } = useGetRideHistoryQuery([])
   const [cancelRide, { isLoading: isCancelling }] = useCancelRideMutation()
   const [rateRide, { isLoading: isRating }] = useRateRideMutation()
-  console.log(data)
+  
   // Cancel Modal States
   const [cancelOpen, setCancelOpen] = useState(false)
   const [selectedRideId, setSelectedRideId] = useState<string | null>(null)

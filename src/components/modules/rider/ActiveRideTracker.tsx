@@ -1,54 +1,72 @@
-
-
 import { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
 import { MapPin, User, Phone, Navigation } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import type { Ride } from "../../store/slices/rideSlice"
+import { Ride, RideStatus } from "@/types/ride.type"
+import { useGetSingleRideForRiderQuery } from "@/redux/features/ride/ride.api"
+import Loading from "@/components/layout/Loading"
 
-interface ActiveRideTrackerProps {
-  ride: Ride
-}
-
-const ActiveRideTracker = ({ ride }: ActiveRideTrackerProps) => {
+const ActiveRideTracker = () => {
   const [progress, setProgress] = useState(0)
-  const dispatch = useDispatch()
+  const [ride, setRide] = useState<Ride | undefined>(undefined)
+
+  const {
+    data,
+    isLoading: isRideLoading,
+  } = useGetSingleRideForRiderQuery(undefined, { refetchOnMountOrArgChange: true })
+
+  console.log(data);
 
   useEffect(() => {
-    // Simulate ride progress
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          return 100
-        }
-        return prev + Math.random() * 5
-      })
-    }, 2000)
+    if (data) {
+      setRide(data.data)
+    }
+  }, [data])
 
-    return () => clearInterval(interval)
-  }, [])
+  useEffect(() => {
+    if (ride) {
+      setProgress(getProgressFromStatus(ride.status))
+    }
+  }, [ride])
+
+  if (isRideLoading || !ride) return <Loading />
 
   const getStatusInfo = (status: Ride["status"]) => {
     switch (status) {
-      case "requested":
+      case RideStatus.REQUESTED:
         return { label: "Finding Driver", color: "bg-yellow-500", description: "Looking for a nearby driver..." }
-      case "accepted":
+      case RideStatus.ACCEPTED:
         return { label: "Driver Assigned", color: "bg-blue-500", description: "Driver is on the way to pick you up" }
-      case "picked_up":
+      case RideStatus.PICKED_UP:
         return { label: "Picked Up", color: "bg-green-500", description: "You're on your way to destination" }
-      case "in_transit":
+      case RideStatus.IN_TRANSIT:
         return { label: "In Transit", color: "bg-green-500", description: "Heading to your destination" }
-      case "completed":
+      case RideStatus.COMPLETED:
         return { label: "Completed", color: "bg-gray-500", description: "Ride completed successfully" }
-      case "cancelled":
-        return { label: "Cancelled", color: "bg-red-500", description: "Ride was cancelled" }
+      case RideStatus.CANCELED:
+        return { label: "Canceled", color: "bg-red-500", description: "Ride was canceled" }
       default:
         return { label: "Unknown", color: "bg-gray-500", description: "" }
+    }
+  }
+  const getProgressFromStatus = (status: Ride["status"]) => {
+    switch (status) {
+      case RideStatus.REQUESTED:
+        return 10
+      case RideStatus.ACCEPTED:
+        return 30
+      case RideStatus.PICKED_UP:
+        return 60
+      case RideStatus.IN_TRANSIT:
+        return 90
+      case RideStatus.COMPLETED:
+        return 100
+      case RideStatus.CANCELED:
+        return 0
+      default:
+        return 0
     }
   }
 
@@ -65,7 +83,7 @@ const ActiveRideTracker = ({ ride }: ActiveRideTrackerProps) => {
             <p className="text-sm text-muted-foreground">{statusInfo.description}</p>
           </div>
         </div>
-        <Badge variant="outline">Ride #{ride.id.slice(-6)}</Badge>
+        <Badge variant="outline">Ride #{ride._id?.slice(-6)}</Badge>
       </div>
 
       {/* Progress Bar */}
@@ -87,7 +105,7 @@ const ActiveRideTracker = ({ ride }: ActiveRideTrackerProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">{ride.pickupLocation.address}</p>
+            <p className="text-sm">{ride.pickupLocation?.address}</p>
           </CardContent>
         </Card>
 
@@ -99,7 +117,7 @@ const ActiveRideTracker = ({ ride }: ActiveRideTrackerProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">{ride.destination.address}</p>
+            <p className="text-sm">{ride.destinationLocation?.address}</p>
           </CardContent>
         </Card>
       </div>
@@ -119,10 +137,10 @@ const ActiveRideTracker = ({ ride }: ActiveRideTrackerProps) => {
                 <div>
                   <h4 className="font-semibold">{ride.driver.name}</h4>
                   <p className="text-sm text-muted-foreground">
-                    {ride.driver.vehicleDetails.color} {ride.driver.vehicleDetails.make}{" "}
-                    {ride.driver.vehicleDetails.model}
+                    {ride.driver.vehicleDetails?.color} {ride.driver.vehicleDetails?.make}{" "}
+                    {ride.driver.vehicleDetails?.model}
                   </p>
-                  <p className="text-sm text-muted-foreground">{ride.driver.vehicleDetails.licensePlate}</p>
+                  <p className="text-sm text-muted-foreground">{ride.driver.vehicleDetails?.licensePlate}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
@@ -130,10 +148,6 @@ const ActiveRideTracker = ({ ride }: ActiveRideTrackerProps) => {
                   <Phone className="h-4 w-4 mr-2" />
                   Call
                 </Button>
-                <div className="flex items-center gap-1 text-sm">
-                  <span>⭐</span>
-                  <span>{ride.driver.rating}</span>
-                </div>
               </div>
             </div>
           </CardContent>
@@ -166,7 +180,7 @@ const ActiveRideTracker = ({ ride }: ActiveRideTrackerProps) => {
         <Button variant="outline" className="flex-1 bg-transparent">
           Share Trip
         </Button>
-        {ride.status === "requested" && (
+        {ride.status === RideStatus.REQUESTED && (
           <Button variant="destructive" className="flex-1">
             Cancel Ride
           </Button>

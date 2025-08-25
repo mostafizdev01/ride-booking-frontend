@@ -60,7 +60,7 @@ const DriverProfile = () => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
-
+console.log(formData);
   const handleUpdate = async () => {
     try {
       await updateUser({
