@@ -1,4 +1,3 @@
-import Logo from "@/assets/icons/Logo";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -21,6 +20,7 @@ import {
 import { useAppDispatch } from "@/redux/hook";
 import { role } from "@/constants/role";
 import React from "react";
+import { Car } from "lucide-react";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -119,8 +119,11 @@ export default function Navbar() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <Link to='/' className="text-primary hover:text-primary/90">
-              <Logo />
+            <Link to="/" className="flex items-center gap-2">
+              <div className="p-2 bg-primary rounded-lg">
+                <Car className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold">RideShare</span>
             </Link>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
