@@ -1,0 +1,55 @@
+import React from 'react';
+
+const cities = [
+    { name: 'London', country: 'United Kingdom', image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { name: 'Paris', country: 'France', image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { name: 'Berlin', country: 'Germany', image: 'https://images.unsplash.com/photo-1587330979470-3016b6702d89?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { name: 'Amsterdam', country: 'Netherlands', image: 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { name: 'Stockholm', country: 'Sweden', image: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { name: 'Prague', country: 'Czech Republic', image: 'https://images.unsplash.com/photo-1541849546-216549ae216d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' }
+];
+
+export function CitiesSection() {
+    return (
+        <section className="py-20 bg-white rounded-3xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                        Available in 500+ cities
+                    </h2>
+                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        From major capitals to smaller cities, Bolt is expanding rapidly across the globe
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {cities.map((city, index) => (
+                        <div
+                            key={index}
+                            className="group cursor-pointer"
+                        >
+                            <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-4">
+                                <img
+                                    src={city.image}
+                                    alt={city.name}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                                <div className="absolute bottom-4 left-4 text-white">
+                                    <h3 className="text-2xl font-bold">{city.name}</h3>
+                                    <p className="text-sm opacity-90">{city.country}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="text-center mt-12">
+                    <button className="bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition-colors">
+                        See all cities
+                    </button>
+                </div>
+            </div>
+        </section>
+    );
+}
