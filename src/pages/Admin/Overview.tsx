@@ -1,19 +1,17 @@
+import Loading from "@/components/layout/Loading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGetAdminAnalyticsQuery } from "@/redux/features/stats/stats.api";
 import { Car, Clock, DollarSign, MapPin, TrendingUp, Users } from "lucide-react";
 
+
 const Overview = () => {
-    // Mock overview stats
-    const overviewStats = {
-        totalUsers: 15420,
-        activeRides: 89,
-        totalRevenue: 125430,
-        completedRides: 8945,
-        totalDrivers: 2340,
-        totalRiders: 13080,
-        avgRating: 4.7,
-        responseTime: "2.3 min",
+    const { data: overviewStats, isLoading } = useGetAdminAnalyticsQuery("7d");
+
+    if (isLoading) {
+        return <Loading />;
     }
+
     return (
         <div className="space-y-6">
             {/* Key Metrics */}
@@ -50,9 +48,9 @@ const Overview = () => {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${overviewStats.totalRevenue.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${overviewStats.revenue.value.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
-                            <span className="text-green-600">+8%</span> from last month
+                            <span className="text-green-600">{overviewStats.revenue.change > 0 ? "+" : ""}{overviewStats.revenue.change}%</span> from last month
                         </p>
                     </CardContent>
                 </Card>
@@ -65,7 +63,10 @@ const Overview = () => {
                     <CardContent>
                         <div className="text-2xl font-bold">{overviewStats.completedRides.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
-                            <span className="text-green-600">+15%</span> from last month
+                            <span className="text-green-600">
+                                {overviewStats.completedRides > 0 ? "+" : ""}
+                                {overviewStats.completedRides}%
+                            </span> from last month
                         </p>
                     </CardContent>
                 </Card>
@@ -81,8 +82,8 @@ const Overview = () => {
                     <CardContent>
                         <div className="text-2xl font-bold">{overviewStats.totalDrivers.toLocaleString()}</div>
                         <div className="flex items-center gap-2 mt-2">
-                            <Badge className="bg-green-500">Online: 156</Badge>
-                            <Badge variant="outline">Offline: 2184</Badge>
+                            <Badge className="bg-green-500">Online: {overviewStats.onlineDrivers.toLocaleString()}</Badge>
+                            <Badge variant="outline">Offline: {overviewStats.offlineDrivers.toLocaleString()}</Badge>
                         </div>
                     </CardContent>
                 </Card>
@@ -95,8 +96,8 @@ const Overview = () => {
                     <CardContent>
                         <div className="text-2xl font-bold">{overviewStats.totalRiders.toLocaleString()}</div>
                         <div className="flex items-center gap-2 mt-2">
-                            <Badge className="bg-blue-500">Active: 234</Badge>
-                            <Badge variant="outline">Inactive: 12846</Badge>
+                            <Badge className="bg-blue-500">Active: {overviewStats.onlineRiders.toLocaleString()}</Badge>
+                            <Badge variant="outline">Inactive: {overviewStats.offlineRiders.toLocaleString()}</Badge>
                         </div>
                     </CardContent>
                 </Card>

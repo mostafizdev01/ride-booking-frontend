@@ -71,6 +71,15 @@ const UserManagement = () => {
   const meta = data?.meta || { total: 0, page: 1, limit: 10 }
   const totalPages = Math.ceil(meta.total / meta.limit)
 
+const handleRoleChange = async (id: string, newRole: Role) => {
+    try {
+      await updateUser({ id, data: { role: newRole } }).unwrap()
+      toast.success(`User role has been changed to ${newRole}.`)
+    } catch {
+      toast.error("Role change failed.")
+    }
+  }
+
   // ---- Action handler ----
   const handleUserAction = async (id: string, data: { isBlocked: boolean; isActive: boolean }) => {
     try {
@@ -214,6 +223,29 @@ const UserManagement = () => {
                               <DialogHeader>
                                 <DialogTitle>User Details</DialogTitle>
                                 <DialogDescription>Detailed information for {user.name}</DialogDescription>
+                                {/* Update User Role Here*/}
+                                <form>
+                                  <div className="grid grid-cols-1 gap-4">
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="outline" className="w-full">
+                                          {user.role}
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => handleRoleChange(user.id, Role.ADMIN)}>
+                                          Admin
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleRoleChange(user.id, Role.RIDER)}>
+                                          Rider
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleRoleChange(user.id, Role.DRIVER)}>
+                                          Driver
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </div>
+                                </form>
                               </DialogHeader>
                             </DialogContent>
                           </Dialog>

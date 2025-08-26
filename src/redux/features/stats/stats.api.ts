@@ -15,12 +15,19 @@ export const statsApi = baseApi.injectEndpoints({
                 method: 'GET'
             }),
         }),
+        getAdminAnalytics: builder.query({
+            query: (range) => ({
+                url: `/stats/analytics?range=${range}`,
+                method: 'GET'
+            }),
+        }),
     })
 });
 
 export const {
     useGetUserStatsQuery,
-    useGetEarningsStatsQuery
+    useGetEarningsStatsQuery,
+    useGetAdminAnalyticsQuery
 } = statsApi;
 
 
