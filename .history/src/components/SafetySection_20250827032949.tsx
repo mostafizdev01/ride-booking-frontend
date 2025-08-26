@@ -17,7 +17,7 @@ export function SafetySection() {
             alt="We care about safety" 
             sizes="100vw" 
             src="https://c.animaapp.com/merd0x40UYBnNr/assets/5.png" 
-            className="relative text-transparent aspect-[auto_533_/_545] box-border lg:h-full max-w-[585px] w-full md:h-[350px] md:max-w-none md:w-[300px] lg:w-[533px]" 
+            className="relative text-transparent aspect-[auto_533_/_545] box-border lg:h-full max-w-[585px] w-full md:h-[545px] md:max-w-none md:w-[300px]" 
           />
         </div>
         <div className="box-border flex flex-col justify-center -order-1 gap-y-6 pt-8 pb-10 px-8 md:order-none md:gap-y-10 md:pt-10 md:pb-0 md:px-0">

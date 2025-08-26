@@ -1,4 +1,5 @@
 import { BookingForm } from "./components/BookingForm"
+import { CitiesSection } from "./components/CitiesSection"
 import { EarnSection } from "./components/EarnSection"
 import { FeaturesSection } from "./components/FeaturesSection"
 import { Footer } from "./components/Footer"
@@ -6,7 +7,6 @@ import Header from "./components/Header"
 import HeroSection from "./components/heroSection"
 import { HowItWorksSection } from "./components/HowItWorksSection"
 import { SafetySection } from "./components/SafetySection"
-import { ServiceSection } from "./components/ServiceSection"
 import { StatsSection } from "./components/StatsSection"
 
 function App() {
@@ -26,12 +26,12 @@ function App() {
                 <div className="box-border max-w-[1256px] overflow-x-hidden overflow-y-auto w-full mx-auto px-3 md:max-w-[1312px] md:px-7">
                   <FeaturesSection />
                   <SafetySection />
-                  <ServiceSection />
+                  <CitiesSection />
                   <HowItWorksSection />
                   <EarnSection />
-                  <StatsSection />
                   {/* <RoutesSection /> */}
                 </div>
+                  <StatsSection />
                 <Footer />
               </div>
             </div>

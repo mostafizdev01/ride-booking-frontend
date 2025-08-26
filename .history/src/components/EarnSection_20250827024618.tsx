@@ -21,7 +21,7 @@ export function EarnSection() {
             </section>
             {earningSections.map((section) => (
                 <section key={section.id} className="box-border caret-transparent break-words bg-white mb-10 rounded-3xl">
-                    <div className="items-center box-border caret-transparent flex flex-col grow shrink-0 break-words md:p-10">
+                    <div className="items-center box-border caret-transparent flex flex-col grow shrink-0 break-words p-10">
                         <div className="box-border caret-transparent break-words w-full">
                             <div className="box-border caret-transparent break-words">
                                 <div role="tabpanel" className={section.tabPanelClassName}>

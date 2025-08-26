@@ -8,9 +8,9 @@ export function EarnSection() {
                     <div className="box-border caret-transparent max-w-[1136px] break-words w-full">
                         <div className="box-border caret-transparent flex flex-col justify-startbreak-words">
                             <h2 className="text-neutral-900 text-4xl font-bold box-border inline-block leading-9 text-center w-full z-0 font-agrandir md:text-[64px] md:leading-[64px]">
-                                Earn money with{' '}
+                                Earn money with Bolt{' '}
                                 <mark className="relative text-black text-4xl items-center bg-transparent box-border inline-flex justify-center leading-9 md:text-[64px] md:leading-[64px]">
-                                    <span className="relative text-4xl box-border block leading-9 z-[1] md:text-[64px] md:leading-[64px]">Bolt</span>
+                                    <span className="relative text-4xl box-border block leading-9 z-[1] md:text-[64px] md:leading-[64px]">safety</span>
                                     <img src="https://c.animaapp.com/merd0x40UYBnNr/assets/icon-14.svg" alt="Icon" className="absolute text-4xl box-border h-[68px] leading-9 w-[218px] z-0 md:text-[64px] md:leading-[64px]" />
                                 </mark>
                             </h2>
@@ -21,7 +21,7 @@ export function EarnSection() {
             </section>
             {earningSections.map((section) => (
                 <section key={section.id} className="box-border caret-transparent break-words bg-white mb-10 rounded-3xl">
-                    <div className="items-center box-border caret-transparent flex flex-col grow shrink-0 break-words md:p-10">
+                    <div className="items-center box-border caret-transparent flex flex-col grow shrink-0 break-words p-10">
                         <div className="box-border caret-transparent break-words w-full">
                             <div className="box-border caret-transparent break-words">
                                 <div role="tabpanel" className={section.tabPanelClassName}>
