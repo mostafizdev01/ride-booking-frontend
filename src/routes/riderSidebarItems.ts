@@ -1,9 +1,11 @@
-import Profile from "@/pages/Profile";
-import ActiveRideTrackerPage from "@/pages/Rider/ActiveRideTrackerPage";
-import RideHistoryPage from "@/pages/Rider/RideHistoryPage";
-import RiderDashboard from "@/pages/Rider/RiderDashboard";
-import RideRequest from "@/pages/Rider/RideRequest";
 import { ISidebarItem } from "@/types";
+import { lazy } from "react";
+
+const RideRequest = lazy(() => import("@/pages/Rider/RideRequest"));
+const Profile = lazy(() => import("@/pages/Profile"));
+const ActiveRideTrackerPage = lazy(() => import("@/pages/Rider/ActiveRideTrackerPage"));
+const RideHistoryPage = lazy(() => import("@/pages/Rider/RideHistoryPage"));
+const RiderDashboard = lazy(() => import("@/pages/Rider/RiderDashboard"));
 
 export const riderSidebarItems: ISidebarItem[] = [
   {

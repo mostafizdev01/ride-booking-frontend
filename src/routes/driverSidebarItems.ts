@@ -1,10 +1,11 @@
 import { ISidebarItem } from "@/types";
-import Earnings from "@/pages/Driver/EarningsDashboard";
-import Dashboard from "@/pages/Driver/Dashboard";
-import ActiveRideManager from "@/components/modules/driver/ActiveRideManager";
-import IncomingRide from "@/pages/Driver/IncomingRide";
-import DriverProfile from "@/components/modules/driver/DriverProfile";
-import DriverRideHistoryPage from "@/pages/Driver/DriverRideHistoryPage";
+import { lazy } from "react";
+const Earnings =  lazy(() => import("@/pages/Driver/EarningsDashboard"));
+const Dashboard =  lazy(() => import("@/pages/Driver/Dashboard"));
+const ActiveRideManager = lazy(() => import("@/components/modules/driver/ActiveRideManager"));
+const IncomingRide = lazy(() => import("@/pages/Driver/IncomingRide"));
+const DriverProfile = lazy(() => import("@/components/modules/driver/DriverProfile"));
+const DriverRideHistoryPage = lazy(() => import("@/pages/Driver/DriverRideHistoryPage"));
 
 export const driverSidebarItems: ISidebarItem[] = [
   {

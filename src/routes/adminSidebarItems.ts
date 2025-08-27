@@ -6,7 +6,6 @@ const Analytics = lazy(() => import("@/pages/Admin/Analytics"));
 const Overview = lazy(() => import("@/pages/Admin/Overview"));
 const AllUsers = lazy(() => import("@/pages/Admin/AllUsers"));
 const AllRide = lazy(() => import("@/pages/Admin/AllRide"));
-const AddRide = lazy(() => import("@/pages/Admin/AddRide"));
 
 export const adminSidebarItems: ISidebarItem[] = [
   {
@@ -33,15 +32,5 @@ export const adminSidebarItems: ISidebarItem[] = [
         component: AllRide
       },
     ],
-  },
-  {
-    title: "Ride Management",
-    items: [
-      {
-        title: "Add Ride",
-        url: "/admin/add-ride",
-        component: AddRide,
-      },
-    ],
-  },
+  }
 ];

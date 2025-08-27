@@ -24,10 +24,10 @@ export function LoginForm({
   const navigate = useNavigate();
   const form = useForm({
     //! For development only
-    defaultValues: {
-      email: "supar@gmail.com",
-      password: "supar@123",
-    },
+    // defaultValues: {
+    //   email: "supar@gmail.com",
+    //   password: "supar@123",
+    // },
   });
   const [login] = useLoginMutation();
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {

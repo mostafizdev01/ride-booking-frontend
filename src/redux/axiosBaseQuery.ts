@@ -14,25 +14,26 @@ const axiosBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params, headers }) => {
-    try {
-      const result = await axiosInstance({
-        url: url,
-        method,
-        data,
-        params,
-        headers,
-      });
-      return { data: result.data };
-    } catch (axiosError) {
-      const err = axiosError as AxiosError;
-      return {
-        error: {
-          status: err.response?.status,
-          data: err.response?.data || err.message,
-        },
-      };
-    }
-  };
+    async ({ url, method, data, params, headers }) => {
+      try {
+        const result = await axiosInstance({
+          url: url,
+          method,
+          data,
+          params,
+          headers,
+          withCredentials: true,
+        });
+        return { data: result.data };
+      } catch (axiosError) {
+        const err = axiosError as AxiosError;
+        return {
+          error: {
+            status: err.response?.status,
+            data: err.response?.data || err.message,
+          },
+        };
+      }
+    };
 
 export default axiosBaseQuery;

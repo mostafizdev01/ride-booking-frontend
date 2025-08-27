@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MapPin, Power, } from "lucide-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,9 +9,7 @@ import { role } from "@/constants/role"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { toast } from "sonner"
 import { useState } from "react"
-
-
-
+import EmergencySOSPage from "../Emergency/EmergencySOSPage"
 
 const RiderDashboard = () => {
 
@@ -85,6 +82,11 @@ const RiderDashboard = () => {
                         </AlertDescription>
                     </Alert>
                 )}
+            </div>
+
+            {/* Emergency SOS Section - always visible at top */}
+            <div className="mb-6">
+                <EmergencySOSPage />
             </div>
 
             <Card className="mb-8 border-primary bg-primary/5">
