@@ -1,3 +1,4 @@
+import { CommonLayout } from '@/components/layout/CommoLayOut';
 import { createBrowserRouter } from "react-router";
 import App from "../App";
 import Login from "@/redux/pages/auths/Login";

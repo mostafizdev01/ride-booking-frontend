@@ -103,14 +103,19 @@ const GoogleIcon = () => (
 
 
 // --- Main App Component ---
-export default function Register() {
+export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     console.log(showPassword, email, password);
+
+    const [loading, setLoadig] = useState(false)
     const navigate = useNavigate()
 
+    const hadleClick = () => {
+        setLoadig(true)
+    }
 
     const closeFrom = () => {
         navigate("/")
@@ -131,7 +136,7 @@ export default function Register() {
                         <UserIcon />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white">Register From</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white">Login From</h1>
                         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">Enter your credentials to sign in</p>
                     </div>
                 </div>
@@ -166,19 +171,6 @@ export default function Register() {
 
                 {/* Form - Shadcn style */}
                 <div className="space-y-4">
-                    <div className="space-y-2">
-                        <label htmlFor="name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-900 dark:text-zinc-50">
-                            Name
-                        </label>
-                        <input
-                            type="name"
-                            id="name"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter your name"
-                            className="flex h-9 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-5 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 dark:focus-visible:ring-zinc-300 disabled:cursor-not-allowed disabled:opacity-50"
-                        />
-                    </div>
                     <div className="space-y-2">
                         <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-900 dark:text-zinc-50">
                             Email
@@ -215,21 +207,25 @@ export default function Register() {
                         </div>
                     </div>
                     <button
+                        onClick={hadleClick}
                         type="submit"
                         className="inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 dark:focus-visible:ring-zinc-300 disabled:pointer-events-none disabled:opacity-50 bg-zinc-900 text-zinc-50 shadow hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90 h-9 px-4 py-2 w-full"
                     >
-                        Register
+                        {loading ? "Please wait..." : "Sign In"}
                     </button>
                 </div>
 
                 {/* Footer links - More compact */}
                 <div className="text-center space-y-2">
                     <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                        Already have an account?{' '}
-                        <Link to="/login" className="font-medium text-zinc-900 dark:text-zinc-50 underline underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors">
-                            Log in
+                        Don&apos;t have an account?{' '}
+                        <Link to="/register" className="font-medium text-zinc-900 dark:text-zinc-50 underline underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors">
+                            Sign up
                         </Link>
                     </p>
+                    <Link to="/" className="text-sm font-medium text-zinc-900 dark:text-zinc-50 underline underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors">
+                        Forgot your password?
+                    </Link>
                 </div>
 
             </div>

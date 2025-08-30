@@ -225,7 +225,7 @@ export default function Register() {
                 {/* Footer links - More compact */}
                 <div className="text-center space-y-2">
                     <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                        Already have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Link to="/login" className="font-medium text-zinc-900 dark:text-zinc-50 underline underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors">
                             Log in
                         </Link>
