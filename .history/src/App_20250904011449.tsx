@@ -1,3 +1,16 @@
+// import { BookingForm } from "./components/BookingForm"
+// import { EarnSection } from "./components/EarnSection"
+// import { FeaturesSection } from "./components/FeaturesSection"
+// import { Footer } from "./components/Footer"
+// import Header from "./components/Header"
+// import HeroSection from "./components/heroSection"
+// import { HowItWorksSection } from "./components/HowItWorksSection"
+// import { SafetySection } from "./components/SafetySection"
+// import { ServiceSection } from "./components/ServiceSection"
+// import { StatsSection } from "./components/StatsSection"
+// import Testimonial2 from "./components/Testimonial"
+// import Driver from "./pages/driver/Driver"
+
 import { BookingForm } from "./components/BookingForm"
 import { EarnSection } from "./components/EarnSection"
 import { FeaturesSection } from "./components/FeaturesSection"
@@ -9,7 +22,7 @@ import { SafetySection } from "./components/SafetySection"
 import { ServiceSection } from "./components/ServiceSection"
 import { StatsSection } from "./components/StatsSection"
 import Testimonial2 from "./components/Testimonial"
-// import Driver from "./pages/driver/Driver"
+import Driver from "./pages/driver/Driver"
 
 function App() {
 

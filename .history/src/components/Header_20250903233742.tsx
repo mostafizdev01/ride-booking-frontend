@@ -21,8 +21,8 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 mx-auto bg-white/30 backdrop-blur-sm shadow-sm">
-      <div className="max-w-9xl mx-auto flex items-center justify-between px-4 md:px-8 py-3">
+    <header className="w-full shadow-sm bg-white sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-3">
         
         {/* Left side: Logo + Menu */}
         <div className="flex items-center gap-6">
@@ -50,7 +50,7 @@ export default function Header() {
             type="button"
             variant={"outline"}
             aria-label="Log in"
-            className="relative cursor-pointer text-neutral-900 text-lg font-semibold items-center flex shrink-0 h-12 justify-center leading-7 max-w-full min-w-12 text-center w-12 p-0 rounded-xl border-solid border-white font-poppins md:w-auto md:px-[19px]"
+            className="relative cursor-pointer text-neutral-900 text-lg font-semibold items-center flex shrink-0 h-12 justify-center leading-7 max-w-full min-w-12 text-center w-12 p-0 rounded-xl border-solid border-white font-poppins md:w-auto md:px-[19px] before:accent-auto before:box-border before:text-neutral-900 before:hidden before:text-lg before:not-italic before:normal-nums before:font-semibold before:h-[calc(100%_+_10px)] before:left-[-5px] before:tracking-[normal] before:leading-7 before:list-outside before:list-disc before:absolute before:text-center before:indent-[0px] before:normal-case before:top-[-5px] before:visible before:w-[calc(100%_+_10px)] before:border-blue-500 before:rounded-[14px] before:border-separate before:border-[3px] before:border-solid before:font-poppins"
           >
             <div className="items-center box-border gap-x-3 flex justify-center gap-y-3 text-ellipsis text-nowrap overflow-hidden">
               <div className="items-center box-border flex shrink-0 h-6 justify-center text-nowrap w-6">

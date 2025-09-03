@@ -8,7 +8,8 @@ export const rideApi = baseApi.injectEndpoints({
                 method: "GET",
                 params: params
             }),
-            providesTags:["rider"]
+            invalidatesTags:["rider"],
+            // transformResponse: (response) => response.data
         }),
     }),
 });

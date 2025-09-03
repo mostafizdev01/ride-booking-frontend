@@ -66,7 +66,7 @@ export default function UserProfileDropdown() {
     <div className="flex items-center justify-center font-sans">
       <DropdownMenu
         trigger={
-          <div className="p-3 bg-white text-xl cursor-pointer shadow-sm rounded-full hover:ring-2 hover:ring-zinc-300 transition">
+          <div className="p-3 cursor-pointer bg-white text-xl cursor-pointer shadow-sm rounded-full hover:ring-2 hover:ring-zinc-300 transition">
             <FaRegUserCircle />
           </div>
         }

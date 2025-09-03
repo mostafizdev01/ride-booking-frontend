@@ -2,7 +2,7 @@
 export default function HeroSection() {
     return (
         <div>
-            <div className="text-white items-center box-border flex flex-col text-center mt-4 px-3 md:mt-0 md:pt-40 md:px-8">
+            <div className="text-white items-center box-border flex flex-col text-center mt-4 px-3 md:mt-0 md:pt-36 md:px-8">
                 <h1 className="text-[32px] font-bold box-border tracking-[-0.64px] leading-[38px] max-w-[1150px] mb-5 font-agrandir md:text-[64px] md:tracking-[-1.28px] md:leading-[64px] md:mb-12">
                     City to city rides at{' '}
                     <mark className="relative text-black text-[32px] items-center bg-transparent box-border inline-flex justify-center tracking-[-0.64px] leading-[38px] md:text-[64px] md:tracking-[-1.28px] md:leading-[64px]">

@@ -94,7 +94,7 @@ export default function UserProfileDropdown() {
         {/* Menu Items */}
         <div className="py-1">
           <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
-            <FaRegUserCircle className="mr-3 h-4 w-4 text-zinc-500" /> Your Profile
+            <FaRegUserCircle className="mr-3 h-4 w-4 text-zinc-500 cursor-pointer" /> Your Profile
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/dashboard/create-ride")}>
             <BsRocketTakeoff  className="mr-3 h-4 w-4 text-zinc-500" /> Post a Ride

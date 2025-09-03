@@ -1,3 +1,16 @@
+// import { BookingForm } from "./components/BookingForm"
+// import { EarnSection } from "./components/EarnSection"
+// import { FeaturesSection } from "./components/FeaturesSection"
+// import { Footer } from "./components/Footer"
+// import Header from "./components/Header"
+// import HeroSection from "./components/heroSection"
+// import { HowItWorksSection } from "./components/HowItWorksSection"
+// import { SafetySection } from "./components/SafetySection"
+// import { ServiceSection } from "./components/ServiceSection"
+// import { StatsSection } from "./components/StatsSection"
+// import Testimonial2 from "./components/Testimonial"
+// import Driver from "./pages/driver/Driver"
+
 import { BookingForm } from "./components/BookingForm"
 import { EarnSection } from "./components/EarnSection"
 import { FeaturesSection } from "./components/FeaturesSection"
@@ -9,16 +22,16 @@ import { SafetySection } from "./components/SafetySection"
 import { ServiceSection } from "./components/ServiceSection"
 import { StatsSection } from "./components/StatsSection"
 import Testimonial2 from "./components/Testimonial"
-// import Driver from "./pages/driver/Driver"
+import Driver from "./pages/driver/Driver"
 
 function App() {
 
   return (
     <>
       <div className="text-black text-base not-italic normal-nums font-normal accent-auto box-border block tracking-[normal] leading-[18.4px] list-outside list-disc text-start indent-[0px] normal-case visible w-full border-separate font-noto_sans">
-        <Header />
         <div className="box-border">
           <div className="box-border h-full w-full">
+                <Header />
             <div className="box-border">
               <section className="relative bg-[url('https://intercity.indrive.com/assets/images/bg_hero.png')] bg-size-[450%] box-border z-[2] bg-[position:70%_0px] pb-8 md:bg-cover md:bg-left-top md:pb-12">
                 <HeroSection />
@@ -33,7 +46,7 @@ function App() {
                   <EarnSection />
                   <Testimonial2 />
                   <StatsSection />
-                  {/* <Driver /> */}
+                  <Driver />
                 </div>
                 <Footer />
               </div>

@@ -21,7 +21,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 mx-auto bg-white/30 backdrop-blur-sm shadow-sm">
+    <header className="fixed top-5 right-0 left-0 z-50 max-w-[1400px] mx-auto bg-white/30 backdrop-blur-sm shadow-sm rounded-2xl">
       <div className="max-w-9xl mx-auto flex items-center justify-between px-4 md:px-8 py-3">
         
         {/* Left side: Logo + Menu */}

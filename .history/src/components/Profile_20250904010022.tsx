@@ -3,7 +3,6 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BiHelpCircle } from "react-icons/bi";
 import { MdDashboard, MdCreditCard, MdLogout } from "react-icons/md";
-import { BsRocketTakeoff } from "react-icons/bs";
 import { useNavigate } from "react-router";
 
 // ===== Dropdown Components =====
@@ -95,9 +94,6 @@ export default function UserProfileDropdown() {
         <div className="py-1">
           <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
             <FaRegUserCircle className="mr-3 h-4 w-4 text-zinc-500" /> Your Profile
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/dashboard/create-ride")}>
-            <BsRocketTakeoff  className="mr-3 h-4 w-4 text-zinc-500" /> Post a Ride
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/dashboard")}>
             <MdDashboard className="mr-3 h-4 w-4 text-zinc-500" /> Dashboard

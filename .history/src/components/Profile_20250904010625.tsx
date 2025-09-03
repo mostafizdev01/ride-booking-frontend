@@ -92,7 +92,7 @@ export default function UserProfileDropdown() {
         </div>
 
         {/* Menu Items */}
-        <div className="py-1">
+        <div className="py-1 cursor-pointer">
           <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
             <FaRegUserCircle className="mr-3 h-4 w-4 text-zinc-500" /> Your Profile
           </DropdownMenuItem>
