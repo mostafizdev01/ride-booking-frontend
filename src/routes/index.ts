@@ -7,6 +7,8 @@ import Dashboard from "@/pages/Dashboard/Dashboard";
 import FaqPage from "@/pages/Faq";
 import { Profile } from "@/pages/profile/Profile";
 import Rides from "@/pages/ride/Rides";
+import ContactPage from "@/pages/contact/Contact";
+import FeaturePage from "@/pages/feature/Featured";
 
 
 
@@ -32,8 +34,16 @@ export const router = createBrowserRouter([
         Component: Profile
     },
     {
+        path: "/features",
+        Component: FeaturePage
+    },
+    {
         path: "/faq",
         Component: FaqPage
+    },
+    {
+        path: "/contact",
+        Component: ContactPage
     },
     {
         path: "/rides",
