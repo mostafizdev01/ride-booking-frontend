@@ -9,6 +9,7 @@ import { Profile } from "@/pages/profile/Profile";
 import Rides from "@/pages/ride/Rides";
 import ContactPage from "@/pages/contact/Contact";
 import FeaturePage from "@/pages/feature/Featured";
+import AboutPage from "@/pages/about/AboutPage";
 
 
 
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
     {
         path: "/profile",
         Component: Profile
+    },
+    {
+        path: "/about",
+        Component: AboutPage
     },
     {
         path: "/features",
