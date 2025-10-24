@@ -97,7 +97,7 @@ const FaqPage: React.FC = () => {
 
     return (
         <CommonLayout>
-            <div className="flex items-center min-h-screen justify-center bg-zinc-50 dark:bg-zinc-950 ">
+            <div className="flex w-full items-center min-h-screen justify-center bg-zinc-50 dark:bg-zinc-950 ">
                 <div className="w-full max-w-2xl mx-auto bg-white dark:bg-zinc-900 rounded-2xl shadow-lg dark:shadow-zinc-900/20 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
                     <div className="p-6">
                         <h1 className="text-2xl font-bold text-center text-zinc-900 dark:text-zinc-100 mb-1">

@@ -10,7 +10,7 @@ export default function CommonLayout({ children }: IProps) {
     return (
         <div className=" min-h-screen flex flex-col">
             <Header />
-            <div className="grow-1">{children}</div>
+            <div className="flex-1 flex items-center justify-center pt-20">{children}</div>
             <Footer />
         </div>
     );
