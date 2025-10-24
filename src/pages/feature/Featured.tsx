@@ -130,26 +130,57 @@ export default function FeaturePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            {/* Illustration / mockup box */}
-            <div className="relative w-full h-72 lg:h-96 rounded-3xl bg-gradient-to-tr from-[#e6f0ff] to-white shadow-xl overflow-hidden flex items-center justify-center">
-              {/* subtle city/car illustration placeholder */}
+            <div className="relative w-full h-72 lg:h-96 rounded-3xl bg-gradient-to-tr from-[#e0edff] via-[#f8fbff] to-white shadow-xl overflow-hidden flex items-center justify-center">
+              {/* Animated background gradient shimmer */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#2563eb]/10 via-transparent to-[#2563eb]/10 animate-[pulse_6s_infinite]" />
+
+              {/* SVG Illustration */}
               <svg
-                className="w-3/4 h-3/4"
+                className="w-[85%] h-[85%]"
                 viewBox="0 0 800 600"
                 xmlns="http://www.w3.org/2000/svg"
                 role="img"
-                aria-label="City illustration"
+                aria-label="City and ride illustration"
               >
-                <rect x="0" y="0" width="800" height="600" rx="24" fill="none" />
-                <g transform="translate(40,40) scale(0.9)">
-                  <rect x="0" y="320" width="720" height="220" rx="12" fill="#ffffff" opacity="0.9" />
-                  <circle cx="120" cy="420" r="40" fill="#2563eb" />
-                  <rect x="220" y="360" width="280" height="80" rx="12" fill="#60a5fa" />
-                  <rect x="540" y="320" width="120" height="160" rx="12" fill="#93c5fd" />
+                {/* Background buildings */}
+                <g opacity="0.3">
+                  <rect x="80" y="200" width="60" height="250" rx="8" fill="#2563eb" />
+                  <rect x="180" y="160" width="70" height="290" rx="8" fill="#3b82f6" />
+                  <rect x="280" y="240" width="50" height="210" rx="8" fill="#60a5fa" />
+                  <rect x="360" y="180" width="90" height="270" rx="8" fill="#93c5fd" />
+                  <rect x="480" y="220" width="70" height="230" rx="8" fill="#bfdbfe" />
+                  <rect x="580" y="260" width="60" height="190" rx="8" fill="#dbeafe" />
                 </g>
+
+                {/* Road */}
+                <rect x="0" y="470" width="800" height="40" fill="#1e3a8a" />
+                <line x1="0" y1="490" x2="800" y2="490" stroke="#93c5fd" strokeDasharray="40 20" strokeWidth="4" />
+
+                {/* Car body */}
+                <g id="car" transform="translate(100,440)">
+                  <rect x="0" y="-20" width="120" height="30" rx="12" fill="#2563eb" />
+                  <rect x="20" y="-40" width="80" height="25" rx="8" fill="#3b82f6" />
+                  <circle cx="25" cy="10" r="10" fill="#1e3a8a" />
+                  <circle cx="95" cy="10" r="10" fill="#1e3a8a" />
+                </g>
+
+                {/* Animated Car Motion */}
+                <animateTransform
+                  xlinkHref="#car"
+                  attributeName="transform"
+                  type="translate"
+                  from="100,440"
+                  to="700,440"
+                  dur="20s"
+                  repeatCount="indefinite"
+                />
               </svg>
+
+              {/* Decorative glow at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
             </div>
           </motion.div>
+
         </div>
       </section>
 
@@ -213,7 +244,7 @@ export default function FeaturePage() {
       {/* TESTIMONIALS */}
       <section className="container mx-auto px-6 py-12">
         <h2 className="text-2xl font-bold text-center mb-6">Loved by Thousands of Riders</h2>
-        <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
+        <div className="max-w-full mx-auto grid md:grid-cols-3 gap-6">
           {testimonials.map((t) => (
             <motion.div whileHover={{ y: -6 }} key={t.name} className="p-4">
               <Card className="rounded-2xl p-4 shadow-md">
@@ -249,10 +280,34 @@ export default function FeaturePage() {
             </div>
           </div>
 
-          <div className="w-44 h-96 bg-white rounded-2xl shadow-md flex items-center justify-center">
-            {/* Phone mockup placeholder */}
-            <div className="w-28 h-72 rounded-xl bg-gradient-to-b from-[#f8fafc] to-white shadow-inner flex items-center justify-center">Mobile Mockup</div>
+          <div className="w-md h-96 relative rounded-3xl bg-gradient-to-b from-[#2563eb]/10 via-white to-[#f1f5f9] shadow-xl flex items-center justify-center overflow-hidden">
+
+            {/* Glowing outline effect */}
+            <div className="absolute inset-0 rounded-3xl border border-[#2563eb]/20"></div>
+
+            {/* Inner screen */}
+            <div className="w-32 h-[340px] bg-white rounded-2xl shadow-inner flex flex-col items-center justify-between py-6 relative">
+              {/* Top notch */}
+              <div className="w-16 h-2 bg-gray-300 rounded-full absolute top-3"></div>
+
+              {/* Screen content */}
+              <div className="flex flex-col items-center gap-3 mt-8">
+                <div className="w-10 h-10 bg-[#2563eb] rounded-full flex items-center justify-center text-white text-lg font-bold">
+                  Z
+                </div>
+                <p className="text-sm text-gray-600 font-medium text-center px-2">
+                  Ride booked successfully!
+                </p>
+                <div className="w-20 h-20 bg-[#2563eb]/10 rounded-full flex items-center justify-center text-3xl">
+                  🚗
+                </div>
+              </div>
+
+              {/* Bottom home bar */}
+              <div className="w-20 h-1 bg-gray-300 rounded-full mb-2"></div>
+            </div>
           </div>
+
         </div>
       </section>
 
