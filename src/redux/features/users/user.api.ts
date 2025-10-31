@@ -17,6 +17,14 @@ export const userApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: userData
             })
+        }),
+
+        // get myProfile
+        getMe: builder.query({
+            query: () => ({
+                url: "/user/me",
+                method: "GET"
+            })
         })
 
     }),
@@ -24,5 +32,6 @@ export const userApi = baseApi.injectEndpoints({
 
 export const { 
     useGetAllUsersQuery,
-    useLoginUserMutation
+    useLoginUserMutation,
+    useGetMeQuery
 } = userApi;

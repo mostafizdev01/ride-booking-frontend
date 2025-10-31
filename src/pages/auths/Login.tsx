@@ -96,7 +96,6 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [loginUser, {isLoading}] = useLoginUserMutation()
     
-
     // ✅ React Hook Form setup with Zod
     const {
         register,
@@ -115,10 +114,10 @@ export default function Login() {
         if(res?.success){
             reset()
             toast.success(res?.message)
+            navigate("/");
         }
         
 
-        // navigate("/");
     };
 
     const closeForm = () => navigate("/");
@@ -222,7 +221,7 @@ export default function Login() {
                         disabled={isSubmitting}
                         className="inline-flex items-center justify-center w-full h-9 px-4 py-2 rounded-md text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-60"
                     >
-                        {isSubmitting ? "Please wait..." : "Sign In"}
+                        {isLoading ? "Please wait..." : "Sign In"}
                     </button>
                 </form>
 
