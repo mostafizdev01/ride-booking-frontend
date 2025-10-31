@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router";
+import { useLoginUserMutation } from "@/redux/features/users/user.api";
+import { toast } from "react-toastify";
 
 // ✅ Validation schema using Zod
 const loginSchema = z.object({
@@ -92,11 +94,14 @@ const GoogleIcon = () => (
 export default function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [loginUser, {isLoading}] = useLoginUserMutation()
+    
 
     // ✅ React Hook Form setup with Zod
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -105,10 +110,15 @@ export default function Login() {
     // ✅ On form submit (no page reload)
     const onSubmit = async (data: LoginFormData) => {
         console.log("Form submitted:", data);
-        // simulate async
-        await new Promise((r) => setTimeout(r, 1000));
-        alert(`Welcome ${data.email}`);
-        navigate("/");
+        // login api
+        const res = await loginUser(data).unwrap();
+        if(res?.success){
+            reset()
+            toast.success(res?.message)
+        }
+        
+
+        // navigate("/");
     };
 
     const closeForm = () => navigate("/");

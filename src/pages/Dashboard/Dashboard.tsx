@@ -3,6 +3,7 @@ import RoleView from "./RoleView";
 import StatisticsView from "./StatisticsView";
 import Navbar from "./Navbar";
 import SideBar from "./SideBar";
+import DashboardContent from "./Content";
 
 export default function Dashboard() {
     return (
@@ -23,6 +24,7 @@ export default function Dashboard() {
                             <View />
                             <RoleView />
                             <StatisticsView />
+                            <DashboardContent />
                         </div>
                         {/* <!-- End Content --> */}
                     </div>

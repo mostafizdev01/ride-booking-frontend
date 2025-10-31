@@ -99,8 +99,7 @@ export default function Register() {
                         <h1 className="text-2xl font-semibold text-zinc-900 dark:text-white">
                             Register Form
                         </h1>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                            Enter your credentials to sign up
+                        <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">                            Enter your credentials to sign up
                         </p>
                     </div>
                 </div>
