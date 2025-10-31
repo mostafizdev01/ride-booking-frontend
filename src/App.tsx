@@ -13,6 +13,7 @@ import Testimonial2 from "./components/Testimonial"
 
 function App() {
   
+  
 
   return (
     <>
@@ -21,7 +22,7 @@ function App() {
         <div className="box-border">
           <div className="box-border h-full w-full">
             <div className="box-border">
-              <section className="relative bg-[url('https://intercity.indrive.com/assets/images/bg_hero.png')] bg-size-[450%] box-border z-[2] bg-[position:70%_0px] pb-8 md:bg-cover md:bg-left-top md:pb-12">
+              <section className="relative bg-[url('../src/assets/images/bg_hero.png')] bg-size-[450%] box-border z-[2] bg-[position:70%_0px] pb-8 md:bg-cover md:bg-left-top md:pb-12">
                 <HeroSection />
                 <BookingForm />
               </section>

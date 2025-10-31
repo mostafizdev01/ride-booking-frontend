@@ -4,8 +4,12 @@ import StatisticsView from "./StatisticsView";
 import Navbar from "./Navbar";
 import SideBar from "./SideBar";
 import DashboardContent from "./Content";
+import { useGetMeQuery } from "@/redux/features/users/user.api";
 
 export default function Dashboard() {
+    const { data, isLoading } = useGetMeQuery(undefined)
+    console.log(data, isLoading);
+
     return (
         <div>
             <div className="bg-gray-100 font-sans text-gray-800">
