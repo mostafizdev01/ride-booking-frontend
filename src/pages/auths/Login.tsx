@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router";
-import { useLoginUserMutation } from "@/redux/features/users/user.api";
+import { useGetMeQuery, useLoginUserMutation } from "@/redux/features/users/user.api";
 import { toast } from "react-toastify";
 
 // ✅ Validation schema using Zod
@@ -95,6 +95,12 @@ export default function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [loginUser, {isLoading}] = useLoginUserMutation()
+
+    const {data} = useGetMeQuery(undefined)
+
+    if(data){
+        navigate("/")
+    }
     
     // ✅ React Hook Form setup with Zod
     const {
@@ -120,7 +126,7 @@ export default function Login() {
 
     };
 
-    const closeForm = () => navigate("/");
+    const closeForm = () => navigate("/"); /// close icon in login
 
     return (
         <div className="relative w-full flex items-center justify-center font-sans overflow-hidden h-screen">

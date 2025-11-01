@@ -9,6 +9,7 @@ import { SafetySection } from "./components/SafetySection"
 import { ServiceSection } from "./components/ServiceSection"
 import { StatsSection } from "./components/StatsSection"
 import Testimonial2 from "./components/Testimonial"
+import { TopDrivers } from "./components/TopDriver"
 // import Driver from "./pages/driver/Driver"
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                   <SafetySection />
                   <ServiceSection />
                   <HowItWorksSection />
+                  <TopDrivers />
                   <EarnSection />
                   <Testimonial2 />
                   <StatsSection />
