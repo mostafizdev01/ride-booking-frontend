@@ -3,12 +3,13 @@ import RoleView from "./RoleView";
 import StatisticsView from "./StatisticsView";
 import Navbar from "./Navbar";
 import SideBar from "./SideBar";
-import DashboardContent from "./Content";
 import { useGetMeQuery } from "@/redux/features/users/user.api";
+import RiderDashboard from "./Rider/RiderDashboard";
 
 export default function Dashboard() {
     const { data, isLoading } = useGetMeQuery(undefined)
-    console.log(data, isLoading);
+    const {role} = data.data;
+    console.log(data, isLoading,);
 
     return (
         <div>
@@ -25,10 +26,10 @@ export default function Dashboard() {
 
                         {/* <!-- Content --> */}
                         <div className="p-6">
-                            <View />
-                            <RoleView />
-                            <StatisticsView />
-                            <DashboardContent />
+                            {role && role === "admin" && <View />}
+                            {role && role === "admin" && <RoleView />}
+                            {role && role === "admin" && <StatisticsView />}
+                            {role && role === "rider" && <RiderDashboard />}
                         </div>
                         {/* <!-- End Content --> */}
                     </div>

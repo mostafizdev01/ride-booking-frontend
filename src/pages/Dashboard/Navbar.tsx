@@ -28,7 +28,7 @@ export default function Navbar() {
                                 </div>
                             </div>
                             <div className="p-2 md:block text-left">
-                                <h2 className="text-sm font-semibold text-gray-800">John Doe</h2>
+                                <h2 className="text-sm font-semibold text-gray-800">Md Mostafiz</h2>
                                 <p className="text-xs text-gray-500">Administrator</p>
                             </div>
                         </button>
