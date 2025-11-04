@@ -3,8 +3,8 @@ import { useState } from "react";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNavbar from "./DashboardNavbar";
 import AdminDashboard from "./Admin/AdminDashboard";
-import DriverDashboard from "../Driver/DriverDashboard";
-import RiderDashboard from "./Rider/RiderDashboard";
+// import DriverDashboard from "./Driver/DriverDashboard";
+// import RiderDashboard from "./Rider/RiderDashboard";
 export default function DashboardLayout() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -22,8 +22,8 @@ export default function DashboardLayout() {
         <DashboardNavbar toggleSidebar={toggleSidebar} />
         <main className="flex-1 p-6">
           {role === "admin" && <AdminDashboard />}
-          {role === "driver" && <DriverDashboard />}
-          {role === "rider" && <RiderDashboard />}
+          {/* {role === "driver" && <DriverDashboard />}
+          {role === "rider" && <RiderDashboard />} */}
         </main>
       </div>
     </div>

@@ -1,6 +1,6 @@
 
+import { Button } from '@/components/ui/button';
 import { Star, MapPin, Award, Car, UserStar } from 'lucide-react'
-import { Button } from './ui/button'
 const drivers = [
     {
         name: "John Miller",
