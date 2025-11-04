@@ -3,13 +3,13 @@ import App from "../App";
 import Login from "@/pages/auths/Login";
 import Register from "@/pages/auths/Register";
 import Simple404Page from "@/pages/Error";
-import Dashboard from "@/pages/Dashboard/Dashboard";
 import FaqPage from "@/pages/Faq";
 import { Profile } from "@/pages/profile/Profile";
 import Rides from "@/pages/ride/Rides";
 import ContactPage from "@/pages/contact/Contact";
 import FeaturePage from "@/pages/feature/Featured";
 import AboutPage from "@/pages/about/AboutPage";
+import DashboardLayout from "@/pages/Dashboard/DashboardLayout";
 
 
 
@@ -24,11 +24,11 @@ export const router = createBrowserRouter([
     },
     {
         path: "/register",
-        Component: Register
+        Component: Register,
     },
     {
         path: "/dashboard",
-        Component: Dashboard
+        Component: DashboardLayout
     },
     {
         path: "/profile",
