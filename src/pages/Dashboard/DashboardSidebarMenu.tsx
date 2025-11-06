@@ -1,10 +1,15 @@
 // src/routes/sidebarMenu.ts
 import { LayoutDashboard, Car, History, DollarSign, Users } from "lucide-react";
+import { FaRegUserCircle } from "react-icons/fa";
+import { BsRocketTakeoff } from "react-icons/bs";
+import { MdDashboard, MdCreditCard } from "react-icons/md";
+import { IoMdSettings } from "react-icons/io";
+import { FiLogOut } from "react-icons/fi";
 
 export const DashboardSidebarMenu = {
     rider: [
-        { name: "Dashboard", path: "/rider/dashboard", icon: LayoutDashboard },
-        { name: "Book Ride", path: "/rider/book", icon: Car },
+        { name: "Dashboard", path: "/dashboard/rider", icon: LayoutDashboard },
+        { name: "Book Ride", path: "/dashboard/rider/ride-request", icon: Car },
         { name: "Ride History", path: "/rider/history", icon: History },
     ],
     driver: [
@@ -22,12 +27,6 @@ export const DashboardSidebarMenu = {
 
 // home page profile dropdown 
 
-import { FaRegUserCircle } from "react-icons/fa";
-import { BsRocketTakeoff } from "react-icons/bs";
-import { MdDashboard, MdCreditCard } from "react-icons/md";
-import { IoMdSettings } from "react-icons/io";
-import { FiLogOut } from "react-icons/fi";
-
 export const dashboardMenu = {
     admin: [
         { label: "Dashboard", path: "/dashboard/admin", icon: MdDashboard },
@@ -43,7 +42,7 @@ export const dashboardMenu = {
 
     rider: [
         { label: "Dashboard", path: "/dashboard/rider", icon: MdDashboard },
-        { label: "Find a Ride", path: "/dashboard/find-ride", icon: BsRocketTakeoff },
+        { label: "Find a Ride", path: "/dashboard/rider/ride-request", icon: BsRocketTakeoff },
     ],
 
     // 👇 common items for everyone

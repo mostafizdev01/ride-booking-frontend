@@ -1,5 +1,6 @@
 import DashboardLayout from "@/pages/Dashboard/DashboardLayout";
 import RiderDashboard from "@/pages/Dashboard/Rider/RiderDashboard";
+import RideRequest from "@/pages/Dashboard/Rider/RideRequest";
 
 export const riderRoutes = [
     {
@@ -9,6 +10,10 @@ export const riderRoutes = [
             {
                 index: true,
                 Component: RiderDashboard
+            },
+            {
+                path: "/dashboard/rider/ride-request",
+                Component: RideRequest
             }
         ]
     },
