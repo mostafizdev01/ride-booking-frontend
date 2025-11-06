@@ -8,7 +8,7 @@ export default function DashboardLayout() {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const role = "driver"
+  const role = "admin"
 
   return (
     <div className="flex bg-gray-50 min-h-screen">

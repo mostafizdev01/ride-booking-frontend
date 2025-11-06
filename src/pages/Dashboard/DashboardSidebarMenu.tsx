@@ -1,10 +1,11 @@
 // src/routes/sidebarMenu.ts
-import { LayoutDashboard, Car, History, Users, Truck, LifeBuoy, List, Star, Activity, Home, UserCheck } from "lucide-react";
+import { LayoutDashboard, Car, History, Users, Truck, LifeBuoy, List, Star, Activity, Home, UserCheck, UserPen, UsersRound, MessageCircleCodeIcon, MessageSquare } from "lucide-react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BsRocketTakeoff } from "react-icons/bs";
 import { MdDashboard, MdCreditCard } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { FiLogOut } from "react-icons/fi";
+import { IconMoneybag } from "@tabler/icons-react";
 
 export const DashboardSidebarMenu = {
     rider: [
@@ -50,9 +51,14 @@ export const DashboardSidebarMenu = {
         },
     ],
     admin: [
-        { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
-        { name: "Manage Users", path: "/admin/users", icon: Users },
-        { name: "All Rides", path: "/admin/rides", icon: Car },
+        { name: "Dashboard", path: "/dashboard/admin", icon: LayoutDashboard },
+        { name: "Admin Profile", path: "/dashboard/admin/profile", icon: UserPen },
+        { name: "Manage Rider", path: "/dashboard/admin/manage-rider", icon: Users },
+        { name: "Manage Driver", path: "/dashboard/admin/manage-driver", icon: UsersRound },
+        { name: "All Rides", path: "/dashboard/admin/all-rides", icon: Car },
+        { name: "Earning", path: "/dashboard/admin/earning", icon: IconMoneybag },
+        { name: "Reviews", path: "/dashboard/admin/review", icon: MessageCircleCodeIcon },
+        { name: "Support", path: "/dashboard/admin/support", icon: MessageSquare },
     ],
 };
 
