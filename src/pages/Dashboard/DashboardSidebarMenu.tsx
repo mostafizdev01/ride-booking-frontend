@@ -1,5 +1,5 @@
 // src/routes/sidebarMenu.ts
-import { LayoutDashboard, Car, History, DollarSign, Users, Truck, LifeBuoy, List, Star, Activity, Home } from "lucide-react";
+import { LayoutDashboard, Car, History, Users, Truck, LifeBuoy, List, Star, Activity, Home } from "lucide-react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BsRocketTakeoff } from "react-icons/bs";
 import { MdDashboard, MdCreditCard } from "react-icons/md";
@@ -24,19 +24,14 @@ export const DashboardSidebarMenu = {
             icon: Activity,
         },
         {
-            name: "Earnings",
-            path: "/dashboard/driver/earnings",
-            icon: DollarSign,
+            name: "Earning Ride History",
+            path: "/dashboard/driver/ride-history",
+            icon: List,
         },
         {
             name: "Rating",
             path: "/dashboard/driver/rating",
             icon: Star,
-        },
-        {
-            name: "Ride History",
-            path: "/dashboard/driver/ride-history",
-            icon: List,
         },
         {
             name: "Support",

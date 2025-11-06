@@ -1,7 +1,6 @@
 import DashboardLayout from "@/pages/Dashboard/DashboardLayout";
 import ActiveRides from "@/pages/Dashboard/Driver/ActiveRides";
 import DriverDashboard from "@/pages/Dashboard/Driver/DriverDashboard";
-import Earinings from "@/pages/Dashboard/Driver/Earinings";
 import Ratings from "@/pages/Dashboard/Driver/Ratings";
 import RideHistory from "@/pages/Dashboard/Driver/RideHistory";
 import Support from "@/pages/Dashboard/Driver/Support";
@@ -20,10 +19,6 @@ export const driverRoutes = [
             {
                 path: "/dashboard/driver/active-rides",
                 Component: ActiveRides
-            },
-            {
-                path: "/dashboard/driver/earnings",
-                Component: Earinings
             },
             {
                 path: "/dashboard/driver/rating",
