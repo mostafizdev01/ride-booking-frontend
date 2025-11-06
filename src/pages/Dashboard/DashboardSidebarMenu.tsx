@@ -1,5 +1,5 @@
 // src/routes/sidebarMenu.ts
-import { LayoutDashboard, Car, History, Users, Truck, LifeBuoy, List, Star, Activity, Home } from "lucide-react";
+import { LayoutDashboard, Car, History, Users, Truck, LifeBuoy, List, Star, Activity, Home, UserCheck } from "lucide-react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BsRocketTakeoff } from "react-icons/bs";
 import { MdDashboard, MdCreditCard } from "react-icons/md";
@@ -17,6 +17,11 @@ export const DashboardSidebarMenu = {
             name: "Dashboard",
             path: "/dashboard/driver",
             icon: Home,
+        },
+        {
+            name: "My Profile",
+            path: "/dashboard/driver/Profile",
+            icon: UserCheck,
         },
         {
             name: "Active Rides",
