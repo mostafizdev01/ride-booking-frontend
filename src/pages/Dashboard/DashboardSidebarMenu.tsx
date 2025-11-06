@@ -10,7 +10,7 @@ export const DashboardSidebarMenu = {
     rider: [
         { name: "Dashboard", path: "/dashboard/rider", icon: LayoutDashboard },
         { name: "Book Ride", path: "/dashboard/rider/ride-request", icon: Car },
-        { name: "Ride History", path: "/rider/history", icon: History },
+        { name: "Ride History", path: "/dashboard/rider/ride-history", icon: History },
     ],
     driver: [
         { name: "Dashboard", path: "/driver/dashboard", icon: LayoutDashboard },
