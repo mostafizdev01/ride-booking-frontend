@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Button } from "./ui/button";
-import UserProfileDropdown from "./Profile";
-import TextLogo from "../assets/images/TextAndLogoWithLime.png";
+import TextLogo from "../../assets/images/TextAndLogoWithLime.png";
 import { Menu, X } from "lucide-react";
 import { useGetMeQuery } from "@/redux/features/users/user.api";
+import UserProfileDropdown from "../Module/Home/Profile";
+import { Button } from "../ui/button";
 
 export default function Header() {
   const navigate = useNavigate();

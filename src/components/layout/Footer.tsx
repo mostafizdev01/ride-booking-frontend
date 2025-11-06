@@ -1,6 +1,7 @@
-import { socialLinks, appStoreLinks } from '../components/data/footerData';
-import footerLogo from '../assets/images/TextAndLogoWithLime1.png'
+
+import footerLogo from '../../assets/images/TextAndLogoWithLime1.png'
 import { Link } from 'react-router';
+import { appStoreLinks, socialLinks } from '../data/footerData';
 
 export function Footer() {
     return (
@@ -8,7 +9,7 @@ export function Footer() {
             <div className="box-border flex flex-col-reverse justify-between max-w-[1256px] gap-y-7 w-full mx-auto px-3 md:flex-row md:max-w-[1312px] md:gap-y-[normal] md:px-7">
                 <div className="box-border flex flex-col max-w-[422px] gap-y-7 md:gap-y-6">
                     <div className="box-border gap-x-3 flex">
-                        {socialLinks.map((link) => (
+                        {socialLinks?.map((link) => (
                             <a key={link.id} href={link.href} className={link.className}>
                                 <img src={link.icon} alt="Icon" className={link.iconClass} />
                             </a>
@@ -24,7 +25,7 @@ export function Footer() {
                         </a>
                     </div>
                     <div className="box-border gap-x-3 flex flex-wrap w-full md:flex-nowrap md:w-auto">
-                        {appStoreLinks.map((link) => (
+                        {appStoreLinks?.map((link) => (
                             <a
                                 key={link.id}
                                 aria-label={link.ariaLabel}

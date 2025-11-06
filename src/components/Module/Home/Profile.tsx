@@ -1,9 +1,7 @@
-"use client";
+import { dashboardMenu } from "@/pages/Dashboard/DashboardSidebarMenu";
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
-import { BiHelpCircle } from "react-icons/bi";
-import { MdDashboard, MdCreditCard, MdLogout } from "react-icons/md";
-import { BsRocketTakeoff } from "react-icons/bs";
+
 import { useNavigate } from "react-router";
 
 // ===== Dropdown Components =====
@@ -54,13 +52,30 @@ const DropdownMenuItem = ({ children, onClick }: DropdownMenuItemProps) => (
   </button>
 );
 
-const DropdownMenuSeparator = () => (
-  <div className="my-2 h-px bg-zinc-200 dark:bg-zinc-700" />
-);
+
+// ===== Menu Config (Role-Based) =====
+
 
 // ===== Main Component =====
 export default function UserProfileDropdown() {
+  // Normally ei role ta login theke asbe
+  const role = "rider";
+
+  const roleItems = dashboardMenu[role] || [];
+
+  const allItems = [...roleItems, ...dashboardMenu.common];
+
   const navigate = useNavigate();
+
+
+  const handleClick = (path: string) => {
+    if (path === "/logout") {
+      localStorage.clear();
+      navigate("/login");
+    } else {
+      navigate(path);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center font-sans">
@@ -71,7 +86,7 @@ export default function UserProfileDropdown() {
           </div>
         }
       >
-        {/* User Info */}
+        {/* ===== User Info ===== */}
         <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
@@ -84,38 +99,17 @@ export default function UserProfileDropdown() {
               <div className="text-xs text-zinc-500 dark:text-zinc-400">
                 john@example.com
               </div>
-              <div className="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                Pro Plan
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Menu Items */}
+        {/* ===== Dynamic Menu ===== */}
         <div className="py-1">
-          <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
-            <FaRegUserCircle className="mr-3 h-4 w-4 text-zinc-500" /> Your Profile
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/dashboard/create-ride")}>
-            <BsRocketTakeoff  className="mr-3 h-4 w-4 text-zinc-500" /> Post a Ride
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/dashboard")}>
-            <MdDashboard className="mr-3 h-4 w-4 text-zinc-500" /> Dashboard
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/dashboard/billing")}>
-            <MdCreditCard className="mr-3 h-4 w-4 text-zinc-500" /> Billing & Plans
-          </DropdownMenuItem>
-        </div>
-
-        <DropdownMenuSeparator />
-
-        <div className="py-1">
-          <DropdownMenuItem onClick={() => navigate("/dashboard/help")}>
-            <BiHelpCircle className="mr-3 h-4 w-4 text-zinc-500" /> Help & Support
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/signout")}>
-            <MdLogout className="mr-3 h-4 w-4 text-zinc-500" /> Sign Out
-          </DropdownMenuItem>
+          {allItems.map(({ label, path, icon: Icon }) => (
+            <DropdownMenuItem key={path} onClick={()=> handleClick(path)}>
+              <Icon className="mr-3 h-4 w-4 text-zinc-500" /> {label}
+            </DropdownMenuItem>
+          ))}
         </div>
       </DropdownMenu>
     </div>

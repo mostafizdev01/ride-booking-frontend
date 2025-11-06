@@ -1,6 +1,7 @@
 // import { howItWorksSteps } from '../components/data/howItWorksSteps';
 
-import { howItWorksSteps } from "./data/howItWorksSteps";
+import { howItWorksSteps } from "@/components/data/howItWorksSteps";
+
 
 export function HowItWorksSection() {
     return (
@@ -17,7 +18,7 @@ export function HowItWorksSection() {
                     <img src="https://c.animaapp.com/merd0x40UYBnNr/assets/icon-17.svg" alt="Icon" className="box-border h-[374px] w-full md:w-[373px]" />
                 </div>
                 <ol className="box-border flex flex-col list-decimal gap-y-9 pt-10 px-4 md:pt-0 md:px-0">
-                    {howItWorksSteps.map((step) => (
+                    {howItWorksSteps?.map((step) => (
                         <li key={step.id} value={step.id} className="relative items-center box-border gap-x-6 flex text-left before:accent-auto before:items-center before:bg-lime-400 before:text-neutral-900 before:flex before:text-2xl before:not-italic before:normal-nums before:font-bold before:h-14 before:justify-center before:tracking-[normal] before:leading-8 before:list-outside before:list-decimal before:min-w-14 before:text-left before:indent-[0px] before:normal-case before:visible before:w-14 before:rounded-2xl before:border-separate before:font-agrandir before:md:text-[28px]">
                             <div className="box-border">
                                 <h3 className="text-neutral-900 text-[22px] font-bold box-border inline-block tracking-[-0.88px] leading-7 z-0 font-agrandir md:text-3xl md:tracking-[-1.2px] md:leading-8">{step.title}</h3>

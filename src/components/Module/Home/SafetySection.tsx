@@ -1,4 +1,5 @@
-import { safetyFeatures } from '../components/data/SafetyFeature';
+import { safetyFeatures } from "@/components/data/SafetyFeature";
+
 
 export function SafetySection() {
   return (

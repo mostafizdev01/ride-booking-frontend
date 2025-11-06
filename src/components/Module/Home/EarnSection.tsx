@@ -1,4 +1,5 @@
-import { earningSections } from '../components/data/earning';
+import { earningSections } from "@/components/data/earning";
+
 
 export function EarnSection() {
     return (
@@ -19,7 +20,7 @@ export function EarnSection() {
                     </div>
                 </div>
             </section>
-            {earningSections.map((section) => (
+            {earningSections?.map((section) => (
                 <section key={section.id} className="box-border caret-transparent break-words bg-white mb-10 rounded-3xl">
                     <div className="items-center box-border caret-transparent flex flex-col grow shrink-0 break-words md:p-10">
                         <div className="box-border caret-transparent break-words w-full">
