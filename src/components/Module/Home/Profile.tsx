@@ -59,7 +59,7 @@ const DropdownMenuItem = ({ children, onClick }: DropdownMenuItemProps) => (
 // ===== Main Component =====
 export default function UserProfileDropdown() {
   // Normally ei role ta login theke asbe
-  const role = "rider";
+  const role = "driver";
 
   const roleItems = dashboardMenu[role] || [];
 

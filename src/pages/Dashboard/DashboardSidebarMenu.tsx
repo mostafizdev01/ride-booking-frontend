@@ -1,5 +1,5 @@
 // src/routes/sidebarMenu.ts
-import { LayoutDashboard, Car, History, DollarSign, Users } from "lucide-react";
+import { LayoutDashboard, Car, History, DollarSign, Users, Truck, LifeBuoy, List, Star, Activity, Home } from "lucide-react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BsRocketTakeoff } from "react-icons/bs";
 import { MdDashboard, MdCreditCard } from "react-icons/md";
@@ -13,9 +13,41 @@ export const DashboardSidebarMenu = {
         { name: "Ride History", path: "/dashboard/rider/ride-history", icon: History },
     ],
     driver: [
-        { name: "Dashboard", path: "/driver/dashboard", icon: LayoutDashboard },
-        { name: "My Rides", path: "/driver/rides", icon: Car },
-        { name: "Earnings", path: "/driver/earnings", icon: DollarSign },
+        {
+            name: "Dashboard",
+            path: "/dashboard/driver",
+            icon: Home,
+        },
+        {
+            name: "Active Rides",
+            path: "/dashboard/driver/active-rides",
+            icon: Activity,
+        },
+        {
+            name: "Earnings",
+            path: "/dashboard/driver/earnings",
+            icon: DollarSign,
+        },
+        {
+            name: "Rating",
+            path: "/dashboard/driver/rating",
+            icon: Star,
+        },
+        {
+            name: "Ride History",
+            path: "/dashboard/driver/ride-history",
+            icon: List,
+        },
+        {
+            name: "Support",
+            path: "/dashboard/driver/support",
+            icon: LifeBuoy,
+        },
+        {
+            name: "Vehicle",
+            path: "/dashboard/driver/vehicle",
+            icon: Truck,
+        },
     ],
     admin: [
         { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
@@ -36,7 +68,7 @@ export const dashboardMenu = {
 
     driver: [
         { label: "Dashboard", path: "/dashboard/driver", icon: MdDashboard },
-        { label: "Post a Ride", path: "/dashboard/create-ride", icon: BsRocketTakeoff },
+        { label: "Find a Ride", path: "/dashboard/find-ride", icon: BsRocketTakeoff },
         { label: "Billing & Plans", path: "/dashboard/billing", icon: MdCreditCard },
     ],
 

@@ -153,10 +153,10 @@ export default function RideHistory() {
                                 <td className="px-6 py-4">
                                     <span
                                         className={`px-3 py-1 text-xs font-semibold rounded-full ${ride.status === "Completed"
-                                                ? "bg-green-100 text-green-700"
-                                                : ride.status === "Cancelled"
-                                                    ? "bg-red-100 text-red-700"
-                                                    : "bg-yellow-100 text-yellow-700"
+                                            ? "bg-green-100 text-green-700"
+                                            : ride.status === "Cancelled"
+                                                ? "bg-red-100 text-red-700"
+                                                : "bg-yellow-100 text-yellow-700"
                                             }`}
                                     >
                                         {ride.status}
