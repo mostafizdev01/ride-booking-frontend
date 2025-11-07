@@ -1,4 +1,4 @@
-// src/pages/Dashboard/AdminRiderManagement.tsx
+// src/pages/Dashboard/AdminDriverManagement.tsx
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,26 +25,28 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
-const dummyRiders = [
+const dummyDrivers = [
   {
     id: 1,
-    name: "Alex Johnson",
-    email: "alex@example.com",
-    phone: "01712345678",
-    totalRides: 80,
-    rating: 4.8,
+    name: "John Doe",
+    email: "john@example.com",
+    phone: "0123456789",
+    vehicle: "Sedan",
+    totalRides: 120,
+    rating: 4.9,
     status: "Active",
-    joinDate: "2024-04-20",
+    joinDate: "2024-02-12",
   },
   {
     id: 2,
-    name: "Sophia Miller",
-    email: "sophia@example.com",
-    phone: "01898765432",
-    totalRides: 65,
-    rating: 4.5,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    phone: "0987654321",
+    vehicle: "SUV",
+    totalRides: 95,
+    rating: 4.7,
     status: "Inactive",
-    joinDate: "2023-10-15",
+    joinDate: "2023-11-05",
   },
 ];
 
@@ -55,16 +57,17 @@ const statusStyles: Record<string, string> = {
   Approved: "bg-blue-100 text-blue-700 border border-blue-200",
 };
 
-export default function AdminRiderManagement() {
-  const [riders, setRiders] = useState(dummyRiders);
+export default function AdminDriverManagement() {
+  const [drivers, setDrivers] = useState(dummyDrivers);
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewRider, setViewRider] = useState<typeof dummyRiders[0] | null>(null);
-  const [editRider, setEditRider] = useState<typeof dummyRiders[0] | null>(null);
-  const [addRider, setAddRider] = useState(false);
-  const [newRider, setNewRider] = useState({
+  const [viewDriver, setViewDriver] = useState<typeof dummyDrivers[0] | null>(null);
+  const [editDriver, setEditDriver] = useState<typeof dummyDrivers[0] | null>(null);
+  const [addDriver, setAddDriver] = useState(false);
+  const [newDriver, setNewDriver] = useState({
     name: "",
     email: "",
     phone: "",
+    vehicle: "",
     totalRides: 0,
     rating: 0,
     status: "Active",
@@ -72,36 +75,38 @@ export default function AdminRiderManagement() {
   });
 
   const handleStatusChange = (id: number, status: string) => {
-    setRiders((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status } : r))
+    setDrivers((prev) =>
+      prev.map((d) => (d.id === id ? { ...d, status } : d))
     );
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this rider?")) {
-      setRiders((prev) => prev.filter((r) => r.id !== id));
+    if (confirm("Are you sure you want to delete this driver?")) {
+      setDrivers((prev) => prev.filter((d) => d.id !== id));
     }
   };
 
   const handleEditSave = () => {
-    if (!editRider) return;
-    setRiders((prev) =>
-      prev.map((r) => (r.id === editRider.id ? editRider : r))
+    if (!editDriver) return;
+    setDrivers((prev) =>
+      prev.map((d) => (d.id === editDriver.id ? editDriver : d))
     );
-    setEditRider(null);
+    setEditDriver(null);
   };
 
-  const handleAddRider = () => {
-    if (!newRider.name || !newRider.email) return alert("Please fill all fields");
-    setRiders((prev) => [
+  const handleAddDriver = () => {
+    if (!newDriver.name || !newDriver.email || !newDriver.vehicle)
+      return alert("Please fill all fields");
+    setDrivers((prev) => [
       ...prev,
-      { id: prev.length + 1, ...newRider },
+      { id: prev.length + 1, ...newDriver },
     ]);
-    setAddRider(false);
-    setNewRider({
+    setAddDriver(false);
+    setNewDriver({
       name: "",
       email: "",
       phone: "",
+      vehicle: "",
       totalRides: 0,
       rating: 0,
       status: "Active",
@@ -109,36 +114,38 @@ export default function AdminRiderManagement() {
     });
   };
 
-  const filteredRiders = riders.filter(
-    (r) =>
-      r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.phone.includes(searchTerm)
+  const filteredDrivers = drivers.filter(
+    (d) =>
+      d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      d.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      d.phone.includes(searchTerm) ||
+      d.vehicle.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="p-6 bg-white shadow-xl rounded-xl">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Rider Management</h2>
-        <Button onClick={() => setAddRider(true)}>+ Add Rider</Button>
+        <h2 className="text-2xl font-bold">Driver Management</h2>
+        <Button onClick={() => setAddDriver(true)}>+ Add Driver</Button>
       </div>
 
       <div className="mb-4">
         <Input
-          placeholder="Search riders by name, email, or phone..."
+          placeholder="Search drivers by name, email, phone, or vehicle..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-sm"
         />
       </div>
 
-      <div className="overflow-x-auto rounded-lg shadow">
+      <div className="overflow-x-auto rounded-lg shadow border">
         <Table className="min-w-full bg-white">
           <TableHeader>
             <TableRow className="bg-gray-50">
               <TableHead className="text-left font-semibold">Name</TableHead>
               <TableHead className="text-left font-semibold">Email</TableHead>
               <TableHead className="text-left font-semibold">Phone</TableHead>
+              <TableHead className="text-left font-semibold">Vehicle</TableHead>
               <TableHead className="text-center font-semibold">Total Rides</TableHead>
               <TableHead className="text-center font-semibold">Rating</TableHead>
               <TableHead className="text-center font-semibold">Status</TableHead>
@@ -146,24 +153,25 @@ export default function AdminRiderManagement() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredRiders.map((rider) => (
-              <TableRow key={rider.id} className="hover:bg-gray-50">
-                <TableCell>{rider.name}</TableCell>
-                <TableCell>{rider.email}</TableCell>
-                <TableCell>{rider.phone}</TableCell>
-                <TableCell className="text-center">{rider.totalRides}</TableCell>
-                <TableCell className="text-center">{rider.rating}</TableCell>
+            {filteredDrivers.map((driver) => (
+              <TableRow key={driver.id} className="hover:bg-gray-50">
+                <TableCell>{driver.name}</TableCell>
+                <TableCell>{driver.email}</TableCell>
+                <TableCell>{driver.phone}</TableCell>
+                <TableCell>{driver.vehicle}</TableCell>
+                <TableCell className="text-center">{driver.totalRides}</TableCell>
+                <TableCell className="text-center">{driver.rating}</TableCell>
                 <TableCell className="text-center">
                   <span
-                    className={`px-3 py-1 text-sm rounded-full font-medium ${statusStyles[rider.status]}`}
+                    className={`px-3 py-1 text-sm rounded-full font-medium ${statusStyles[driver.status]}`}
                   >
-                    {rider.status}
+                    {driver.status}
                   </span>
                 </TableCell>
                 <TableCell className="flex justify-center items-center gap-2">
                   <Select
-                    value={rider.status}
-                    onValueChange={(val) => handleStatusChange(rider.id, val)}
+                    value={driver.status}
+                    onValueChange={(val) => handleStatusChange(driver.id, val)}
                   >
                     <SelectTrigger className="w-28">
                       <SelectValue placeholder="Status" />
@@ -175,35 +183,34 @@ export default function AdminRiderManagement() {
                       <SelectItem value="Approved">Approved</SelectItem>
                     </SelectContent>
                   </Select>
-
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setViewRider(rider)}
+                    onClick={() => setViewDriver(driver)}
                   >
                     View
                   </Button>
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => setEditRider(rider)}
+                    onClick={() => setEditDriver(driver)}
                   >
                     Edit
                   </Button>
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={() => handleDelete(rider.id)}
+                    onClick={() => handleDelete(driver.id)}
                   >
                     Delete
                   </Button>
                 </TableCell>
               </TableRow>
             ))}
-            {filteredRiders.length === 0 && (
+            {filteredDrivers.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-4 text-gray-500">
-                  No riders found.
+                <TableCell colSpan={8} className="text-center py-4 text-gray-500">
+                  No drivers found.
                 </TableCell>
               </TableRow>
             )}
@@ -212,61 +219,69 @@ export default function AdminRiderManagement() {
       </div>
 
       {/* View Modal */}
-      <Dialog open={!!viewRider} onOpenChange={() => setViewRider(null)}>
+      <Dialog open={!!viewDriver} onOpenChange={() => setViewDriver(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Rider Profile</DialogTitle>
+            <DialogTitle>Driver Profile</DialogTitle>
           </DialogHeader>
-          {viewRider && (
+          {viewDriver && (
             <div className="space-y-2 text-sm">
-              <p><strong>Name:</strong> {viewRider.name}</p>
-              <p><strong>Email:</strong> {viewRider.email}</p>
-              <p><strong>Phone:</strong> {viewRider.phone}</p>
-              <p><strong>Total Rides:</strong> {viewRider.totalRides}</p>
-              <p><strong>Rating:</strong> {viewRider.rating}</p>
-              <p><strong>Status:</strong> {viewRider.status}</p>
-              <p><strong>Join Date:</strong> {viewRider.joinDate}</p>
+              <p><strong>Name:</strong> {viewDriver.name}</p>
+              <p><strong>Email:</strong> {viewDriver.email}</p>
+              <p><strong>Phone:</strong> {viewDriver.phone}</p>
+              <p><strong>Vehicle:</strong> {viewDriver.vehicle}</p>
+              <p><strong>Total Rides:</strong> {viewDriver.totalRides}</p>
+              <p><strong>Rating:</strong> {viewDriver.rating}</p>
+              <p><strong>Status:</strong> {viewDriver.status}</p>
+              <p><strong>Join Date:</strong> {viewDriver.joinDate}</p>
             </div>
           )}
           <DialogFooter>
-            <Button onClick={() => setViewRider(null)}>Close</Button>
+            <Button onClick={() => setViewDriver(null)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Edit Modal */}
-      <Dialog open={!!editRider} onOpenChange={() => setEditRider(null)}>
+      <Dialog open={!!editDriver} onOpenChange={() => setEditDriver(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Edit Rider</DialogTitle>
+            <DialogTitle>Edit Driver</DialogTitle>
           </DialogHeader>
-          {editRider && (
+          {editDriver && (
             <div className="space-y-3">
               <Input
-                value={editRider.name}
+                value={editDriver.name}
                 onChange={(e) =>
-                  setEditRider({ ...editRider, name: e.target.value })
+                  setEditDriver({ ...editDriver, name: e.target.value })
                 }
                 placeholder="Name"
               />
               <Input
-                value={editRider.email}
+                value={editDriver.email}
                 onChange={(e) =>
-                  setEditRider({ ...editRider, email: e.target.value })
+                  setEditDriver({ ...editDriver, email: e.target.value })
                 }
                 placeholder="Email"
               />
               <Input
-                value={editRider.phone}
+                value={editDriver.phone}
                 onChange={(e) =>
-                  setEditRider({ ...editRider, phone: e.target.value })
+                  setEditDriver({ ...editDriver, phone: e.target.value })
                 }
                 placeholder="Phone"
+              />
+              <Input
+                value={editDriver.vehicle}
+                onChange={(e) =>
+                  setEditDriver({ ...editDriver, vehicle: e.target.value })
+                }
+                placeholder="Vehicle"
               />
             </div>
           )}
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setEditRider(null)}>
+            <Button variant="secondary" onClick={() => setEditDriver(null)}>
               Cancel
             </Button>
             <Button onClick={handleEditSave}>Save Changes</Button>
@@ -274,40 +289,47 @@ export default function AdminRiderManagement() {
         </DialogContent>
       </Dialog>
 
-      {/* Add Rider Modal */}
-      <Dialog open={addRider} onOpenChange={setAddRider}>
+      {/* Add Driver Modal */}
+      <Dialog open={addDriver} onOpenChange={setAddDriver}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Add New Rider</DialogTitle>
+            <DialogTitle>Add New Driver</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <Input
               placeholder="Name"
-              value={newRider.name}
+              value={newDriver.name}
               onChange={(e) =>
-                setNewRider({ ...newRider, name: e.target.value })
+                setNewDriver({ ...newDriver, name: e.target.value })
               }
             />
             <Input
               placeholder="Email"
-              value={newRider.email}
+              value={newDriver.email}
               onChange={(e) =>
-                setNewRider({ ...newRider, email: e.target.value })
+                setNewDriver({ ...newDriver, email: e.target.value })
               }
             />
             <Input
               placeholder="Phone"
-              value={newRider.phone}
+              value={newDriver.phone}
               onChange={(e) =>
-                setNewRider({ ...newRider, phone: e.target.value })
+                setNewDriver({ ...newDriver, phone: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Vehicle Type"
+              value={newDriver.vehicle}
+              onChange={(e) =>
+                setNewDriver({ ...newDriver, vehicle: e.target.value })
               }
             />
           </div>
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setAddRider(false)}>
+            <Button variant="secondary" onClick={() => setAddDriver(false)}>
               Cancel
             </Button>
-            <Button onClick={handleAddRider}>Add Rider</Button>
+            <Button onClick={handleAddDriver}>Add Driver</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
