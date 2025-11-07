@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaPlus, FaEdit, FaTrash, FaEye, FaToggleOn, FaToggleOff, FaSearch } from "react-icons/fa";
 
-export default function ManageDriver() {
+export default function DriverManagement() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [drivers, setDrivers] = useState([
