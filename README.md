@@ -8,8 +8,8 @@ This frontend connects seamlessly with the backend API to deliver tailored exper
 
 ## 🌍 Live Demo
 
-🔗 **Frontend:** [Deployed Link Here](https://ride-share-by-arafat.netlify.app)
-🔗 **Backend:** [Deployed Link Here](https://ride-management-backend.vercel.app)
+🔗 **Frontend:** [Deployed Link Here](https://ride-booking-front-end-nine.vercel.app)
+🔗 **Backend:** [Deployed Link Here](https://ride-booking-backend-pi.vercel.app)
 <!-- 📽️ **Demo Video (10–15 mins):** [Video Link Here]() -->
 
 ---
@@ -160,17 +160,17 @@ npm run build
 ### 👤 Admin
 
 * **Email:** [supar@gmail.com](mailto:supar@gmail.com)
-* **Password:** supar@123
+* **Password:** 12341234
 
 ### 🚘 Driver
 
-* **Email:** [driver@gmail.com](mailto:driver@gmail.com)
-* **Password:** Driver@123
+* **Email:** [driver5@gmail.com](mailto:driver@gmail.com)
+* **Password:** @Driver1234
 
 ### 🧑 Rider
 
-* **Email:** [rider@gmail.com](mailto:rider@gmail.com)
-* **Password:** Rider@123
+* **Email:** [rider3@gmail.com](mailto:rider@gmail.com)
+* **Password:** @Rider1234
 
 ---
 
