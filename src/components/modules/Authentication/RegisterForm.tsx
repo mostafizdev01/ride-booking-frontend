@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -63,11 +64,15 @@ export function RegisterForm({
 
     try {
       const result = await register(userInfo).unwrap();
-      console.log(result);
-      toast.success("User created successfully");
-      navigate("/verify");
-    } catch (error) {
-      console.error(error);
+      if (result.success) {
+        toast.success("User created successfully");
+      }
+      navigate("/login");
+    } catch (error: any) {
+      console.log(error)
+      if (!error.data.success) {
+        toast.error(error.data.message);
+      }
     }
   };
 

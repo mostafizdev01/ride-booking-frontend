@@ -17,7 +17,7 @@ const ActiveRideTracker = () => {
     isLoading: isRideLoading,
   } = useGetSingleRideForRiderQuery(undefined, { refetchOnMountOrArgChange: true })
 
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     if (data) {

@@ -15,7 +15,7 @@ const IncomingRideRequests = () => {
   const [incomingRequests, setIncomingRequests] = useState<Ride[]>([])
   const [processingRequest, setProcessingRequest] = useState<string | null>(null)
 
-  console.log(incomingRequests);
+  // console.log(incomingRequests);
   const [isSharingLocation, setIsSharingLocation] = useState(false)
   const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [watchId, setWatchId] = useState<number | null>(null)

@@ -55,7 +55,7 @@ const UserManagement = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [currentPage, setCurrentPage] = useState(1)
 
-  console.log(searchQuery, roleFilter, statusFilter);
+  // console.log(searchQuery, roleFilter, statusFilter);
   // ---- API call with query params ----
   const { data, isLoading } = useAllUsersQuery({
     search: searchQuery || undefined,
@@ -83,7 +83,7 @@ const handleRoleChange = async (id: string, newRole: Role) => {
   // ---- Action handler ----
   const handleUserAction = async (id: string, data: { isBlocked: boolean; isActive: boolean }) => {
     try {
-      console.log(data, id);
+      // console.log(data, id);
       await updateUser({
         id, data: {
           isBlocked: data.isBlocked,

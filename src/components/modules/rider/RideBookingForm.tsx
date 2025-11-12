@@ -169,7 +169,7 @@ export default function RideBookingForm() {
       }
     }
 
-    console.log(ridePayload);
+    // console.log(ridePayload);
 
     try {
       const rideData = await requestRide(ridePayload).unwrap()

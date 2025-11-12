@@ -82,7 +82,7 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="py-20 lg:py-32 bg-gradient-to-br from-primary/10 via-background to-accent/5">
+      <section className="py-20 lg:py-32 bg-linear-to-br from-primary/10 via-background to-accent/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">

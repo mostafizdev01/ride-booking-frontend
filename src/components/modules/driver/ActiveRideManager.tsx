@@ -1,17 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import { MapPin, Navigation, User, Phone, CheckCircle, ArrowRight } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import icons1 from "../../../assets/images/locationIcon.png"
-import icons2 from "../../../assets/images/locationIcon2.png"
-import { Ride, RideStatus } from "@/types/ride.type"
 import { toast } from "sonner"
-import { useGetActiveRideQuery, useUpdateRideStatusMutation } from "@/redux/features/ride/ride.api"
-
 import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import L from "leaflet"
@@ -24,47 +18,54 @@ L.Icon.Default.mergeOptions({
 })
 
 const pickupIcon = new L.Icon({
-  iconUrl: icons1,
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
   iconSize: [38, 38],
   iconAnchor: [19, 38],
 })
 
 const destinationIcon = new L.Icon({
-  iconUrl: icons2,
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
   iconSize: [38, 38],
   iconAnchor: [19, 38],
 })
 
-const ActiveRideManager = () => {
+type RideStatus = "ACCEPTED" | "PICKED_UP" | "IN_TRANSIT" | "COMPLETED"
+
+interface Ride {
+  _id: string
+  status: RideStatus
+  pickupLocation: { coordinates: [number, number]; address: string }
+  destinationLocation: { coordinates: [number, number]; address: string }
+  rider: { name: string }
+  fare: number
+  paymentMethod: string
+}
+
+const fakeRide: Ride = {
+  _id: "RID123456789",
+  status: "ACCEPTED",
+  pickupLocation: {
+    coordinates: [90.4125, 23.8103],
+    address: "Banani, Dhaka",
+  },
+  destinationLocation: {
+    coordinates: [90.4075, 23.8150],
+    address: "Gulshan, Dhaka",
+  },
+  rider: { name: "Jhon Deo" },
+  fare: 12.5,
+  paymentMethod: "Cash",
+}
+
+const ActiveRideManagerFake = () => {
   const navigate = useNavigate()
-
-  const {
-    data,
-    isLoading: isRideLoading,
-    isFetching: isRideFetching,
-    refetch,
-  } = useGetActiveRideQuery(undefined, { refetchOnMountOrArgChange: true })
-
-  const [updateStatus, { isLoading: isMutating } ] = useUpdateRideStatusMutation()
-
-  const [ride, setRide] = useState<Ride | null>(null)
-
-  const [driverLocation, setDriverLocation] = useState<[number, number] | null>(null)
+  const [ride, setRide] = useState<Ride | null>(fakeRide)
+  const [driverLocation, setDriverLocation] = useState<[number, number] | null>([
+    fakeRide.pickupLocation.coordinates[1],
+    fakeRide.pickupLocation.coordinates[0],
+  ])
   const moveTimer = useRef<NodeJS.Timeout | null>(null)
-
-  useEffect(() => {
-    if (data?.data) {
-      const r: Ride = data.data
-      setRide(r)
-      setDriverLocation([
-        r.pickupLocation.coordinates[1],
-        r.pickupLocation.coordinates[0],
-      ])
-    } else {
-      setRide(null)
-      setDriverLocation(null)
-    }
-  }, [data])
+  const isMutating = false
 
   useEffect(() => {
     if (!ride || !driverLocation) return
@@ -76,7 +77,7 @@ const ActiveRideManager = () => {
 
     if (moveTimer.current) clearInterval(moveTimer.current)
 
-    if (ride.status === RideStatus.PICKED_UP || ride.status === RideStatus.IN_TRANSIT) {
+    if (ride.status === "PICKED_UP" || ride.status === "IN_TRANSIT") {
       moveTimer.current = setInterval(() => {
         setDriverLocation((prev) => {
           const [lat, lng] = prev ?? [
@@ -98,28 +99,15 @@ const ActiveRideManager = () => {
     }
   }, [ride?.status, ride?.destinationLocation, driverLocation, ride])
 
-  const getNextStatus = (currentStatus: Ride["status"]): Ride["status"] | null => {
-    switch (currentStatus) {
-      case RideStatus.ACCEPTED:
-        return RideStatus.PICKED_UP
-      case RideStatus.PICKED_UP:
-        return RideStatus.IN_TRANSIT
-      case RideStatus.IN_TRANSIT:
-        return RideStatus.COMPLETED
-      default:
-        return null
-    }
-  }
-
   const getStatusProgress = (status: Ride["status"]): number => {
     switch (status) {
-      case RideStatus.ACCEPTED:
+      case "ACCEPTED":
         return 25
-      case RideStatus.PICKED_UP:
+      case "PICKED_UP":
         return 50
-      case RideStatus.IN_TRANSIT:
+      case "IN_TRANSIT":
         return 75
-      case RideStatus.COMPLETED:
+      case "COMPLETED":
         return 100
       default:
         return 0
@@ -129,92 +117,30 @@ const ActiveRideManager = () => {
   const statusInfo = useMemo(() => {
     const status = ride?.status
     switch (status) {
-      case RideStatus.ACCEPTED:
-        return {
-          label: "Heading to Pickup",
-          description: "Navigate to the pickup location",
-          action: "Confirm Pickup",
-          color: "bg-blue-500",
-        }
-      case RideStatus.PICKED_UP:
-        return {
-          label: "Passenger Picked Up",
-          description: "Heading to destination",
-          action: "Start Trip",
-          color: "bg-yellow-500",
-        }
-      case RideStatus.IN_TRANSIT:
-        return {
-          label: "In Transit",
-          description: "On the way to destination",
-          action: "Complete Trip",
-          color: "bg-green-500",
-        }
-      case RideStatus.COMPLETED:
-        return {
-          label: "Trip Completed",
-          description: "Trip finished successfully",
-          action: null ,
-          color: "bg-gray-500",
-        }
+      case "ACCEPTED":
+        return { label: "Heading to Pickup", description: "Navigate to the pickup location", action: "Confirm Pickup", color: "bg-blue-500" }
+      case "PICKED_UP":
+        return { label: "Passenger Picked Up", description: "Heading to destination", action: "Start Trip", color: "bg-yellow-500" }
+      case "IN_TRANSIT":
+        return { label: "In Transit", description: "On the way to destination", action: "Complete Trip", color: "bg-green-500" }
+      case "COMPLETED":
+        return { label: "Trip Completed", description: "Trip finished successfully", action: null, color: "bg-gray-500" }
       default:
-        return {
-          label: "Unknown Status",
-          description: "",
-          action: null ,
-          color: "bg-gray-500",
-        }
+        return { label: "Unknown Status", description: "", action: null, color: "bg-gray-500" }
     }
   }, [ride?.status])
 
   const progress = useMemo(() => (ride ? getStatusProgress(ride.status) : 0), [ride])
 
-  const handleUpdateStatus = async () => {
-    if (!ride || isMutating) return
-    const nextStatus = getNextStatus(ride.status)
-    if (!nextStatus) return
-
-    try {
-      await updateStatus({ id: ride._id, data: { status: nextStatus } }).unwrap()
-
-      setRide(prev => (prev ? { ...prev, status: nextStatus } : prev))
-
-      const refreshed = await refetch()
-      if (refreshed?.data?.data) setRide(refreshed.data.data)
-
-      if (nextStatus === RideStatus.COMPLETED) {
-        toast.success("Trip completed successfully! Payment processed.")
-        setRide(null)
-        navigate("/driver/incoming-ride-requests")
-        return
-      }
-
-      const label = String(nextStatus).replace(/_/g, " ")
-      toast.success(`Status updated to ${label}`)
-    } catch (error: any) {
-      const message = error?.data?.message || error?.message || "Failed to update ride status"
-      toast.error(message)
+  const handleUpdateStatus = () => {
+    if (!ride) return
+    if (ride.status === "ACCEPTED") setRide({ ...ride, status: "PICKED_UP" })
+    else if (ride.status === "PICKED_UP") setRide({ ...ride, status: "IN_TRANSIT" })
+    else if (ride.status === "IN_TRANSIT") {
+      setRide({ ...ride, status: "COMPLETED" })
+      toast.success("Trip completed!")
+      setTimeout(() => navigate("/driver/incoming-ride-requests"), 1000)
     }
-  }
-
-  if (isRideLoading || isRideFetching) {
-    return (
-      <div className="flex flex-col items-center justify-center h-96 space-y-4">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-gray-600 text-sm">Loading active ride...</p>
-      </div>
-    )
-  }
-
-  if (!ride) {
-    return (
-      <div className="flex flex-col items-center justify-center h-72 space-y-3">
-        <p className="text-sm text-muted-foreground">No active ride at the moment.</p>
-        <Button variant="outline" onClick={() => navigate("/driver/incoming-ride-requests")}>
-          Go to Requests
-        </Button>
-      </div>
-    )
   }
 
   const hasCoords = Boolean(
@@ -223,17 +149,16 @@ const ActiveRideManager = () => {
   )
 
   const pickupLatLng: [number, number] = [
-    ride.pickupLocation.coordinates[1],
-    ride.pickupLocation.coordinates[0],
+    ride!.pickupLocation.coordinates[1],
+    ride!.pickupLocation.coordinates[0],
   ]
-
   const destLatLng: [number, number] = [
-    ride.destinationLocation.coordinates[1],
-    ride.destinationLocation.coordinates[0],
+    ride!.destinationLocation.coordinates[1],
+    ride!.destinationLocation.coordinates[0],
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className={`w-3 h-3 rounded-full ${statusInfo.color} animate-pulse`} />
@@ -242,7 +167,7 @@ const ActiveRideManager = () => {
             <p className="text-sm text-muted-foreground">{statusInfo.description}</p>
           </div>
         </div>
-        <Badge variant="outline">Ride #{ride._id?.slice(-6)}</Badge>
+        <Badge variant="outline">Ride #{ride!._id?.slice(-6)}</Badge>
       </div>
 
       <div className="space-y-2">
@@ -262,7 +187,7 @@ const ActiveRideManager = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">{ride?.pickupLocation?.address}</p>
+            <p className="text-sm">{ride!.pickupLocation.address}</p>
           </CardContent>
         </Card>
 
@@ -274,7 +199,7 @@ const ActiveRideManager = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">{ride?.destinationLocation?.address}</p>
+            <p className="text-sm">{ride!.destinationLocation.address}</p>
           </CardContent>
         </Card>
       </div>
@@ -290,11 +215,9 @@ const ActiveRideManager = () => {
                 <User className="h-6 w-6" />
               </div>
               <div>
-                <h4 className="font-semibold">{ride?.rider?.name}</h4>
-                <p className="text-sm text-muted-foreground">Payment: {ride?.paymentMethod}</p>
-                {typeof ride?.fare === "number" && (
-                  <p className="text-sm text-muted-foreground">Fare: ${ride.fare.toFixed(2)}</p>
-                )}
+                <h4 className="font-semibold">{ride!.rider.name}</h4>
+                <p className="text-sm text-muted-foreground">Payment: {ride!.paymentMethod}</p>
+                <p className="text-sm text-muted-foreground">Fare: ${ride!.fare.toFixed(2)}</p>
               </div>
             </div>
             <Button size="sm" variant="outline">
@@ -312,26 +235,12 @@ const ActiveRideManager = () => {
         </CardHeader>
         <CardContent className="h-80">
           {hasCoords ? (
-            <MapContainer
-              center={pickupLatLng}
-              zoom={13}
-              scrollWheelZoom
-              className="h-full w-full"
-            >
+            <MapContainer center={pickupLatLng} zoom={13} scrollWheelZoom className="h-full w-full">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
               <Marker position={pickupLatLng} icon={pickupIcon as any} />
-
               <Marker position={destLatLng} icon={destinationIcon as any} />
-
               {driverLocation && <Marker position={driverLocation} icon={pickupIcon as any} />}
-
-              {driverLocation && (
-                <Polyline
-                  positions={[pickupLatLng, driverLocation, destLatLng]}
-                  pathOptions={{ color: "blue" }}
-                />
-              )}
+              {driverLocation && <Polyline positions={[pickupLatLng, driverLocation, destLatLng]} pathOptions={{ color: "blue" }} />}
             </MapContainer>
           ) : (
             <div className="h-full w-full flex items-center justify-center text-sm text-muted-foreground">
@@ -342,28 +251,13 @@ const ActiveRideManager = () => {
       </Card>
 
       {statusInfo.action && (
-        <Button
-          onClick={handleUpdateStatus}
-          disabled={isMutating}
-          className="flex-1"
-          size="lg"
-        >
-          {isMutating ? (
-            "Updating..."
-          ) : (
-            <>
-              {ride?.status === RideStatus.IN_TRANSIT ? (
-                <CheckCircle className="h-4 w-4 mr-2" />
-              ) : (
-                <ArrowRight className="h-4 w-4 mr-2" />
-              )}
-              {statusInfo.action}
-            </>
-          )}
+        <Button onClick={handleUpdateStatus} disabled={isMutating} className="flex-1" size="lg">
+          {ride!.status === "IN_TRANSIT" ? <CheckCircle className="h-4 w-4 mr-2" /> : <ArrowRight className="h-4 w-4 mr-2" />}
+          {statusInfo.action}
         </Button>
       )}
     </div>
   )
 }
 
-export default ActiveRideManager
+export default ActiveRideManagerFake

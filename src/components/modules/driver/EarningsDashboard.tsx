@@ -28,7 +28,7 @@ const EarningsDashboard = () => {
   const { data: earningsdata, isLoading } = useGetEarningsStatsQuery([])
 
   const earningsStats = earningsdata?.data as IEarningsStats;
-  console.log(earningsStats);
+  // console.log(earningsStats);
   if (isLoading || !earningsStats) return <Loading />
 
   const getCurrentData = (): IEarningsData[] => {
