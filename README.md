@@ -186,8 +186,7 @@ npm run build
 ---
 
 ## 👨‍💻 Author
-
-Developed by **Arafat Islam** ([@GitHub](https://github.com/arafat20mupi) · [Portfolio](https://arafat-islam.vercel.app))
+Developed by **Mostafiz** ([@GitHub](https://github.com/mostafizdev01) · [@Portfolio](https://www.mostafizdev.com))
 
 ---
 
