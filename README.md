@@ -174,8 +174,6 @@ npm run build
 
 ---
 
-## 📊 Explaination Video: https://drive.google.com/file/d/1ONwmU3McWJihYD5Es6GibHOECGxYtcpO/view?usp=sharing
-
 ## 📊 Future Enhancements
 
 * Google/Facebook login integration
@@ -192,3 +190,4 @@ Developed by **Arafat Islam** ([@GitHub](https://github.com/arafat20mupi) · [Po
 ---
 
 Would you like me to also prepare a **backend README.md** in the same polished format so both repos stay consistent?
+
